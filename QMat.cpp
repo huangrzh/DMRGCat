@@ -1,5 +1,5 @@
 #include "QMat.h"
-
+#include "setting.h"
 
 DMRGCat::QMat::QMat(){}
 DMRGCat::QMat::~QMat(){}
@@ -33,6 +33,37 @@ DMRGCat::QMat::QMat(const std::vector<std::pair<int, int>>& LRIDs, const std::ve
 
 DMRGCat::QMat::QMat(const QMat& qmat1, const QMat& qmat2, const BlockQBase& bigBase){
 	int no = 0;
+#ifdef FERMION
+	int sign = DMRGCat::getFermionSign(qmat2.R2LID.begin()->second,qmat2.R2LID.begin()->first);
+	if (sign == 1){
+		for (const auto& x : qmat1.R2LID){
+			for (const auto& y : qmat2.R2LID){
+				int newRID = DMRGCat::getAddID(x.first, y.first);
+				int newLID = DMRGCat::getAddID(x.second, y.second);
+				arma::mat tempMat1;
+				if (DMRGCat::getFermionSign(y.second) == -1){
+					tempMat1 = -arma::kron(qmat1.SubMat.at(qmat1.RQID2MatNo(x.first)), qmat2.SubMat.at(qmat2.RQID2MatNo.at(y.first)));
+				}
+				else{
+					tempMat1 = arma::kron(qmat1.SubMat.at(qmat1.RQID2MatNo(x.first)), qmat2.SubMat.at(qmat2.RQID2MatNo.at(y.first)));
+				}
+				 
+				if (R2LID.find(newRID) == R2LID.end()){
+					R2LID[newRID] = newRID;
+					arma::mat tempMat(bigBase.SubQIDDim.at(newLID), bigBase.SubQIDDim.at(newRID));
+					matCompress(tempMat, bigBase.StartDim.at(std::pair<int, int>(x.second, y.second)), tempMat1, bigBase.StartDim.at(std::pair<int, int>(x.first, y.first)));
+					SubMat.push_back(tempMat);
+					RQID2MatNo[newRID] = no;
+					LQID2MatNo[newLID] = no;
+					no++;
+				}
+				else{
+					matCompress(SubMat.at(RQID2MatNo.at(newRID)), bigBase.StartDim.at(std::pair<int, int>(x.second, y.second)), tempMat1, bigBase.StartDim.at(std::pair<int, int>(x.first, y.first)));
+				}
+			}
+		}
+	}
+#endif	
 	for (const auto& x : qmat1.R2LID){
 		for (const auto& y : qmat2.R2LID){
 			int newRID = DMRGCat::getAddID(x.first,y.first);
@@ -40,7 +71,7 @@ DMRGCat::QMat::QMat(const QMat& qmat1, const QMat& qmat2, const BlockQBase& bigB
 			arma::mat tempMat1 = arma::kron(qmat1.SubMat.at(qmat1.RQID2MatNo(x.first)), qmat2.SubMat.at(qmat2.RQID2MatNo.at(y.first)));
 			if (R2LID.find(newRID) == R2LID.end()){
 				R2LID[newRID] = newRID;
-				arma::mat tempMat(bigBase.SubQIDDim.at(newLID), bigBase.SubQIDDim.at(newRID));				
+				arma::mat tempMat(bigBase.SubQIDDim.at(newLID), bigBase.SubQIDDim.at(newRID));		
 				matCompress(tempMat, bigBase.StartDim.at(std::pair<int,int>(x.second,y.second)), tempMat1, bigBase.StartDim.at(std::pair<int,int>(x.first,y.first)));
 				SubMat.push_back(tempMat);
 				RQID2MatNo[newRID] = no;

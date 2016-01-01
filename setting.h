@@ -13,8 +13,8 @@
 //#define ONE_Q
 #define NUMBER_OF_KINDS_OF_PARTICLES 1
 
-// 1 means fermion system, 0 otherwise
-#define FERMIONSIGN 1
+#define FERMION
+//#define BOSON
 
 
 #endif
