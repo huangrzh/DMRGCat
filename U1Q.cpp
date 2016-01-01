@@ -99,10 +99,38 @@ int DMRGCat::getFermionSign(int id){
 	}else{
 		return -1;
 	}
-	return MAX_Q*q1 + q2;
 #endif
 #ifdef ONE_Q
-	return id1 + id2;
+	if(id%2==1){
+		return -1;	
+	}
+	else{
+		return 1;
+	}
+#endif
+}
+
+
+int DMRGCat::getFermionSign(int lqid, int rqid){
+#ifdef TWO_Q
+	int lq1 = lqid / MAX_Q;
+	int lq2 = lqid % MAX_Q;
+	int rq1 = rqid / MAX_Q;
+	int rq2 = rqid % MAX_Q;
+	if ((lq1 + rq1) % 2 == 1 || (lq2 + rq2) % 2 == 1){
+		return -1;
+	}
+	else{
+		return 1;
+	}
+#endif
+#ifdef ONE_Q
+	if ((lqid+rqid) % 2 == 1){
+		return -1;
+	}
+	else{
+		return 1;
+	}
 #endif
 }
 
