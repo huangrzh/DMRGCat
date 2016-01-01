@@ -20,8 +20,7 @@ public:
 	friend void getKronOrder(const BlockQBase &b1, const BlockQBase &b2, std::map<std::pair<int,int>,int>& startDim);
 	void truncate(BlockQBase &ubase);
 	friend std::ostream& operator<<(std::ostream& os, const BlockQBase& base);
-	
-
+	friend class QMat;
 private:
 	std::unordered_map<int, int> SubQIDDim;
 
