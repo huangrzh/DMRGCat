@@ -77,6 +77,18 @@ int DMRGCat::U1Q::getID()const{
 	return ID;
 }
 
+
+int DMRGCat::getAddID(int id1, int id2){
+#ifdef TWO_Q
+	int q1 = id1/MAX_Q + id2/MAX_Q;
+	int q2 = id1%MAX_Q + id2%MAX_Q;
+	return MAX_Q*q1 + q2;
+#endif
+#ifdef ONE_Q
+	return id1 + id2;
+#endif
+}
+
 DMRGCat::U1Q& DMRGCat::U1Q::operator= (const DMRGCat::U1Q& Gvar){
 	Q = Gvar.Q;
 	ID = Gvar.ID;
@@ -151,7 +163,7 @@ DMRGCat::U1Q  DMRGCat::U1Q::operator- (const DMRGCat::U1Q& Gvar)const{
 }
 
 std::ostream& DMRGCat::operator<<(std::ostream& output,const DMRGCat::U1Q& GQvar){
-    output<<"U1Q: " << GQvar.ID << "(";
+    output<< "(";
     if(NUMBER_OF_GOOD_QUANTUM_NUMBER==1){
        output<<std::setw(3)<<GQvar.Q[0]<<")   ";
     } else{
