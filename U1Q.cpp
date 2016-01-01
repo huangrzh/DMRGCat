@@ -89,6 +89,23 @@ int DMRGCat::getAddID(int id1, int id2){
 #endif
 }
 
+
+int DMRGCat::getFermionSign(int id){
+#ifdef TWO_Q
+	int q1 = id / MAX_Q;
+	int q2 = id%MAX_Q;
+	if ((q1 + q2) % 2 == 0){
+		return 1;
+	}else{
+		return -1;
+	}
+	return MAX_Q*q1 + q2;
+#endif
+#ifdef ONE_Q
+	return id1 + id2;
+#endif
+}
+
 DMRGCat::U1Q& DMRGCat::U1Q::operator= (const DMRGCat::U1Q& Gvar){
 	Q = Gvar.Q;
 	ID = Gvar.ID;

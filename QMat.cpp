@@ -69,14 +69,19 @@ void DMRGCat::QMat::matCompress(arma::mat& newMat, int dimL, const arma::mat& ol
 std::ostream& DMRGCat::operator<<(std::ostream& output, const DMRGCat::QMat& QMatvar){
 	output << "----------------------------------" << std::endl;
 	output << "NumOfBlock:\t" << QMatvar.SubMat.size() << std::endl;
+
 	for (const auto& x : QMatvar.R2LID){
 		output << "Q1:" << DMRGCat::U1Q(x.second) << "Q2:" << DMRGCat::U1Q(x.second);
 		int no = QMatvar.RQID2MatNo.at(x.first);
 		output << "Matrix: " << QMatvar.SubMat.at(no).n_rows << " x " << QMatvar.SubMat.at(no).n_cols << std::endl;
+
 		//if (QMatvar.SubMat.at(no).n_rows <= 9 && QMatvar.SubMat.at(no).n_cols <= 9)
 		//output << QMatvar.SubMat.at(no);
 	}
+
 	output << std::endl << std::endl;
+
+	return output;
 }
 
 
