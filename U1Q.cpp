@@ -110,6 +110,14 @@ int DMRGCat::getFermionSign(int id){
 #endif
 }
 
+int DMRGCat::getID(const std::vector<int>& var){
+#ifdef TWO_Q
+	return MAX_Q*var.at(0) + var.at(1);
+#endif
+#ifdef ONE_Q
+	return var.at(0);
+#endif
+}
 
 int DMRGCat::getFermionSign(int lqid, int rqid){
 #ifdef TWO_Q

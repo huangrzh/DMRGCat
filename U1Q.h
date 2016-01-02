@@ -45,6 +45,7 @@ private:
     int Num;
 	int ID;
 };
+int getID(const std::vector<int>&);
 int getFermionSign(int lqid,int rqid);
 int getFermionSign(int id);
 int getAddID(int id1, int id2);
