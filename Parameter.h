@@ -14,6 +14,14 @@ class Parameter{
 		Parameter();
 		void load(std::ifstream& loadfile);
 		friend std::ostream& operator<<(std::ostream& s, const Parameter& para);
+
+#ifdef FERMION_HUBBARD
+		double getU()const;
+		double getT()const;
+		int getD()const;
+		int getSweepNo()const;
+		int getParticleNo()const;
+#endif
 	private:
 
 #ifdef FERMION_HUBBARD

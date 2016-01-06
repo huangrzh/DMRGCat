@@ -1,3 +1,4 @@
+#include "U1Q.h"
 #include "QMat.h"
 #include "setting.h"
 
@@ -19,6 +20,7 @@ DMRGCat::QMat::QMat(const std::vector<std::pair<int, int>>& LRIDs, const std::ve
 		std::cerr << e.what() << std::endl;
 	}
 	int submatno = 0;
+	LRID = LRIDs;
 	for (int i = 0; i < LRIDs.size(); i++){
 		arma::mat temp_mat(1,1);
 		temp_mat = coe.at(i);
@@ -29,6 +31,20 @@ DMRGCat::QMat::QMat(const std::vector<std::pair<int, int>>& LRIDs, const std::ve
 	}
 }
 
+
+
+DMRGCat::QMat::QMat(const std::vector<std::pair<int, int>>& LRIDs){
+	LRID = LRIDs;
+	int submatno = 0;
+	for (int i = 0; i < LRIDs.size(); i++){
+		arma::mat temp_mat;
+		temp_mat.eye(1, 1);
+		SubMat.push_back(temp_mat);
+		RQID2MatNo[LRIDs[i].second] = submatno;
+		LQID2MatNo[LRIDs[i].first] = submatno;
+		submatno++;
+	}
+}
 
 
 DMRGCat::QMat::QMat(const QMat& qmat1, const QMat& qmat2, const BlockQBase& bigBase){
@@ -49,6 +65,7 @@ DMRGCat::QMat::QMat(const QMat& qmat1, const QMat& qmat2, const BlockQBase& bigB
 				}
 				 
 				if (R2LID.find(newRID) == R2LID.end()){
+					LRID.push_back({newLID,newRID});
 					R2LID[newRID] = newRID;
 					arma::mat tempMat(bigBase.SubQIDDim.at(newLID), bigBase.SubQIDDim.at(newRID));
 					matCompress(tempMat, bigBase.StartDim.at(std::pair<int, int>(x.second, y.second)), tempMat1, bigBase.StartDim.at(std::pair<int, int>(x.first, y.first)));
@@ -64,12 +81,14 @@ DMRGCat::QMat::QMat(const QMat& qmat1, const QMat& qmat2, const BlockQBase& bigB
 		}
 	}
 #endif	
+#ifdef BOSON
 	for (const auto& x : qmat1.R2LID){
 		for (const auto& y : qmat2.R2LID){
 			int newRID = DMRGCat::getAddID(x.first,y.first);
 			int newLID = DMRGCat::getAddID(x.second,y.second);
 			arma::mat tempMat1 = arma::kron(qmat1.SubMat.at(qmat1.RQID2MatNo(x.first)), qmat2.SubMat.at(qmat2.RQID2MatNo.at(y.first)));
 			if (R2LID.find(newRID) == R2LID.end()){
+				LRID.push_back({newLID,newRID});
 				R2LID[newRID] = newRID;
 				arma::mat tempMat(bigBase.SubQIDDim.at(newLID), bigBase.SubQIDDim.at(newRID));		
 				matCompress(tempMat, bigBase.StartDim.at(std::pair<int,int>(x.second,y.second)), tempMat1, bigBase.StartDim.at(std::pair<int,int>(x.first,y.first)));
@@ -83,8 +102,68 @@ DMRGCat::QMat::QMat(const QMat& qmat1, const QMat& qmat2, const BlockQBase& bigB
 			}
 		}
 	}
+#endif
 }
 
+
+void DMRGCat::QMat::kron(const QMat& qmat1, const QMat& qmat2, const BlockQBase& bigBase){
+	clear();
+	int no = 0;
+#ifdef FERMION
+	int sign = DMRGCat::getFermionSign(qmat2.R2LID.begin()->second, qmat2.R2LID.begin()->first);
+	if (sign == 1){
+		for (const auto& x : qmat1.R2LID){
+			for (const auto& y : qmat2.R2LID){
+				int newRID = DMRGCat::getAddID(x.first, y.first);
+				int newLID = DMRGCat::getAddID(x.second, y.second);
+				arma::mat tempMat1;
+				if (DMRGCat::getFermionSign(y.second) == -1){
+					tempMat1 = -arma::kron(qmat1.SubMat.at(qmat1.RQID2MatNo(x.first)), qmat2.SubMat.at(qmat2.RQID2MatNo.at(y.first)));
+				}
+				else{
+					tempMat1 = arma::kron(qmat1.SubMat.at(qmat1.RQID2MatNo(x.first)), qmat2.SubMat.at(qmat2.RQID2MatNo.at(y.first)));
+				}
+
+				if (R2LID.find(newRID) == R2LID.end()){
+					LRID.push_back({ newLID, newRID });
+					R2LID[newRID] = newRID;
+					arma::mat tempMat(bigBase.SubQIDDim.at(newLID), bigBase.SubQIDDim.at(newRID));
+					matCompress(tempMat, bigBase.StartDim.at(std::pair<int, int>(x.second, y.second)), tempMat1, bigBase.StartDim.at(std::pair<int, int>(x.first, y.first)));
+					SubMat.push_back(tempMat);
+					RQID2MatNo[newRID] = no;
+					LQID2MatNo[newLID] = no;
+					no++;
+				}
+				else{
+					matCompress(SubMat.at(RQID2MatNo.at(newRID)), bigBase.StartDim.at(std::pair<int, int>(x.second, y.second)), tempMat1, bigBase.StartDim.at(std::pair<int, int>(x.first, y.first)));
+				}
+			}
+		}
+	}
+#endif	
+#ifdef BOSON
+	for (const auto& x : qmat1.R2LID){
+		for (const auto& y : qmat2.R2LID){
+			int newRID = DMRGCat::getAddID(x.first, y.first);
+			int newLID = DMRGCat::getAddID(x.second, y.second);
+			arma::mat tempMat1 = arma::kron(qmat1.SubMat.at(qmat1.RQID2MatNo(x.first)), qmat2.SubMat.at(qmat2.RQID2MatNo.at(y.first)));
+			if (R2LID.find(newRID) == R2LID.end()){
+				LRID.push_back({newLID,newRID});
+				R2LID[newRID] = newRID;
+				arma::mat tempMat(bigBase.SubQIDDim.at(newLID), bigBase.SubQIDDim.at(newRID));
+				matCompress(tempMat, bigBase.StartDim.at(std::pair<int, int>(x.second, y.second)), tempMat1, bigBase.StartDim.at(std::pair<int, int>(x.first, y.first)));
+				SubMat.push_back(tempMat);
+				RQID2MatNo[newRID] = no;
+				LQID2MatNo[newLID] = no;
+				no++;
+			}
+			else{
+				matCompress(SubMat.at(RQID2MatNo.at(newRID)), bigBase.StartDim.at(std::pair<int, int>(x.second, y.second)), tempMat1, bigBase.StartDim.at(std::pair<int, int>(x.first, y.first)));
+			}
+		}
+	}
+#endif
+}
 
 
 void DMRGCat::QMat::matCompress(arma::mat& newMat, int dimL, const arma::mat& old, int dimR){
@@ -114,6 +193,24 @@ std::ostream& DMRGCat::operator<<(std::ostream& output, const DMRGCat::QMat& QMa
 
 	return output;
 }
+
+
+
+void DMRGCat::QMat::eyeQMat(const DMRGCat::BlockQBase& base){
+	clear();
+	int submatno = 0;
+	for (const auto& x : base.SubQIDDim){
+		LRID.push_back({ x.first, x.first });
+		arma::mat temp_mat;
+		temp_mat.eye(x.second, x.second);
+		SubMat.push_back(temp_mat);
+		RQID2MatNo[x.first] = submatno;
+		LQID2MatNo[x.first] = submatno;
+		submatno++;
+	}
+}
+
+
 
 
 void DMRGCat::QMat::clear(){
@@ -161,6 +258,7 @@ void DMRGCat::QMat::load(std::ifstream& loadfile){
 		loadfile.read((char*)&(x), sizeof(int));
 		loadfile.read((char*)&(y), sizeof(int));
 		R2LID[x] = y;
+		LRID.push_back({ y, x });
 	}
 
 	for (int i = 0; i < NumOfBlock; i++){
@@ -186,5 +284,44 @@ void DMRGCat::QMat::load(std::ifstream& loadfile){
 		catch (const std::exception& e) {
 			std::cerr << e.what() << std::endl;
 		}
+	}
+}
+
+
+
+void DMRGCat::QMat::trunc(const BlockQBase& UBase, const QMat& truncU){
+	std::unordered_map<int, int> saveR2No = RQID2MatNo;
+	std::vector<std::pair<int, int>> saveLRID = LRID;
+	std::vector<arma::mat> saveMat = SubMat;
+	std::map<std::pair<int, int>, int> truncLRID;
+	clear();
+
+
+	for (const auto& x : saveLRID){
+		if (UBase.SubQIDDim.find(x.first) == UBase.SubQIDDim.end() || UBase.SubQIDDim.find(x.second) == UBase.SubQIDDim.end()){
+			truncLRID[x]=1;
+		} 
+	}
+
+	int subno = 0;
+	for (const auto&x : saveLRID){
+		if (truncLRID.find(x) != truncLRID.end()){
+			int no = saveR2No.at(x.second);
+			SubMat.push_back(saveMat.at(no));
+			RQID2MatNo[x.second] = subno;
+			LQID2MatNo[x.first] = subno;
+			R2LID[x.second] = x.first;
+			LRID.push_back(x);
+			subno++;
+		}
+	}
+
+	int no;
+	int rno, lno;
+	for (const auto&x : RQID2MatNo){
+		no = x.second;
+		lno = truncU.RQID2MatNo.at(R2LID.at(x.first));
+		rno = truncU.RQID2MatNo.at(x.first);
+		SubMat.at(no) = (truncU.SubMat.at(lno).t()) * (SubMat.at(no)) * (truncU.SubMat.at(rno));
 	}
 }

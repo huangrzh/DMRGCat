@@ -1,62 +1,69 @@
 #include "U1Q.h"
 
+
 DMRGCat::U1Q::U1Q(){
-  Num=NUMBER_OF_GOOD_QUANTUM_NUMBER;
-  Q.resize(Num);
 #ifdef TWO_Q
+  Num = 2;
   ID = MAX_Q*Q.at(0) + Q.at(1);
 #endif
 #ifdef ONE_Q
+  Num = 1;
   ID = Q.at(0);
 #endif
+  Q.resize(Num);
 }
 
+
 DMRGCat::U1Q::U1Q(int inputid){
-	Num = NUMBER_OF_GOOD_QUANTUM_NUMBER;
-	Q.resize(Num);
 	ID = inputid;
+	Q.resize(Num);
 #ifdef TWO_Q
+	Num = 2;
 	int max = MAX_Q;
 	Q[0] = ID/max;
 	Q[1] = ID%max;
 #endif
 #ifdef ONE_Q
+	Num = 1;
 	Q[0] = ID;
 #endif
+	
 }
 
 
 DMRGCat::U1Q::U1Q(const std::vector<int>& inputQ){
-	Num = NUMBER_OF_GOOD_QUANTUM_NUMBER;
+#ifdef TWO_Q
+	Num = 2;
+	ID = MAX_Q*Q.at(0) + Q.at(1);
+#endif
+#ifdef ONE_Q
+	Num = 1;
+	ID = Q.at(0);
+#endif
 	try {
-		if (!(inputQ.size()==Num)) { 
+		if (!(inputQ.size() == Num)) {
 			throw std::runtime_error("Error in U1Q(std::vector<int>: inputQ.size!=Num)");
 		}
 	}
 	catch (const std::exception& e) {
 		std::cerr << e.what() << std::endl;
-	}	
+	}
 	Q.resize(Num);
 	Q = inputQ;
-#ifdef TWO_Q
-	ID = MAX_Q*Q.at(0) + Q.at(1);
-#endif
-#ifdef ONE_Q
-	ID = Q.at(0);
-#endif
 }
 
 
-DMRGCat::U1Q::U1Q(int* inputQ){
-	Num = NUMBER_OF_GOOD_QUANTUM_NUMBER;
-	std::vector<int> qs(inputQ, inputQ + Num);
-	Q = qs;
+DMRGCat::U1Q::U1Q(int* inputQ){	
 #ifdef TWO_Q
+	Num = 2;
 	ID = MAX_Q*Q.at(0) + Q.at(1);
 #endif
 #ifdef ONE_Q
+	Num = 1;
 	ID = Q.at(0);
 #endif
+	std::vector<int> qs(inputQ, inputQ + Num);
+	Q = qs;
 }
 
 
@@ -90,25 +97,7 @@ int DMRGCat::getAddID(int id1, int id2){
 }
 
 
-int DMRGCat::getFermionSign(int id){
-#ifdef TWO_Q
-	int q1 = id / MAX_Q;
-	int q2 = id%MAX_Q;
-	if ((q1 + q2) % 2 == 0){
-		return 1;
-	}else{
-		return -1;
-	}
-#endif
-#ifdef ONE_Q
-	if(id%2==1){
-		return -1;	
-	}
-	else{
-		return 1;
-	}
-#endif
-}
+
 
 int DMRGCat::getID(const std::vector<int>& var){
 #ifdef TWO_Q
@@ -116,6 +105,30 @@ int DMRGCat::getID(const std::vector<int>& var){
 #endif
 #ifdef ONE_Q
 	return var.at(0);
+#endif
+}
+
+
+
+#ifdef FERMION
+int DMRGCat::getFermionSign(int id){
+#ifdef TWO_Q
+	int q1 = id / MAX_Q;
+	int q2 = id%MAX_Q;
+	if ((q1 + q2) % 2 == 0){
+		return 1;
+	}
+	else{
+		return -1;
+	}
+#endif
+#ifdef ONE_Q
+	if (id % 2 == 1){
+		return -1;
+	}
+	else{
+		return 1;
+	}
 #endif
 }
 
@@ -141,6 +154,9 @@ int DMRGCat::getFermionSign(int lqid, int rqid){
 	}
 #endif
 }
+#endif
+
+
 
 DMRGCat::U1Q& DMRGCat::U1Q::operator= (const DMRGCat::U1Q& Gvar){
 	Q = Gvar.Q;
@@ -217,13 +233,14 @@ DMRGCat::U1Q  DMRGCat::U1Q::operator- (const DMRGCat::U1Q& Gvar)const{
 
 std::ostream& DMRGCat::operator<<(std::ostream& output,const DMRGCat::U1Q& GQvar){
     output<< "(";
-    if(NUMBER_OF_GOOD_QUANTUM_NUMBER==1){
+#ifdef ONE_Q
        output<<std::setw(3)<<GQvar.Q[0]<<")   ";
-    } else{
-       for(int i=0;i<NUMBER_OF_GOOD_QUANTUM_NUMBER-1;i++){
+#endif
+#ifdef TWO_Q
+       for(int i=0;i<1;i++){
           output<<std::setw(3)<<GQvar.Q[i]<<",";
        }
-       output<<std::setw(3)<<GQvar.Q[NUMBER_OF_GOOD_QUANTUM_NUMBER-1]<<"  )";
-    }
+       output<<std::setw(3)<<GQvar.Q[1]<<"  )";
+#endif
     return output;
 }
