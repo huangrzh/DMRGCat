@@ -1,14 +1,7 @@
-#include "../Model.h"
 #include "../BlockQBase.h"
 
 void testBlockQBase(){
-	std::string s = "FermionHubbard";
-	DMRGCat::Model model(s);
-
-	std::cout << "test single site block base\n";
-	DMRGCat::BlockQBase block(model);
-	std::cout << block << std::endl;
-
+	DMRGCat::BlockQBase block;
 	std::cout << "=======================\n";
 	std::cout << "test kron\n";
 	DMRGCat::BlockQBase blocks(block);

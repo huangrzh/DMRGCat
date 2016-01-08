@@ -1,8 +1,11 @@
 #include "BlockQBase.h"
 #include "U1Q.h"
 
-DMRGCat::BlockQBase::BlockQBase(){
+DMRGCat::BlockQBase::BlockQBase(){?????????????????}
+DMRGCat::BlockQBase::~BlockQBase(){}
 
+
+void DMRGCat::BlockQBase::genSiteQBase(){
 #ifdef FERMION_HUBBARD
 	for (int i = 0; i < 2; i++){
 		for (int j = 0; j < 2; j++){
@@ -11,12 +14,7 @@ DMRGCat::BlockQBase::BlockQBase(){
 		}
 	}
 #endif
-
 }
-DMRGCat::BlockQBase::~BlockQBase(){}
-
-
-
 //base b1 and b2 form bigger base *this;
 //In DMRG, b1 for block left or right, b2 for added single site
 //				  %------------------%	
