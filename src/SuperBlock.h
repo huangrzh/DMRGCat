@@ -27,7 +27,9 @@ class SuperBlock{
 		
 		void calGroundState();
 		void calPhysicalQuantity();
-
+		
+		void preWaveStep1();
+		void preWaveStep2();
 };
 
 	

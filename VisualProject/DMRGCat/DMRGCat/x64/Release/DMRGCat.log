@@ -1,0 +1,34 @@
+﻿Build started 2016/1/7 9:49:55.
+     1>Project "E:\Data\DMRGCat\VisualProject\DMRGCat\DMRGCat\DMRGCat.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /I"C:\Program Files (x86)\Visual Leak Detector\include" /Zi /nologo /W3 /WX- /sdl /O2 /Oi /GL /D _MBCS /Gm- /EHsc /MD /GS /Gy /Zc:wchar_t /Zc:forScope /Fo"x64\Release\\" /Fd"x64\Release\vc120.pdb" /Gd /TP /errorReport:prompt ..\..\..\Block.cpp ..\..\..\BlockQBase.cpp ..\..\..\main.cpp ..\..\..\Parameter.cpp ..\..\..\QMat.cpp ..\..\..\U1Q.cpp
+         Block.cpp
+         BlockQBase.cpp
+     1>..\..\..\BlockQBase.cpp(64): error C2039: 'unordered_map' : is not a member of 'std'
+     1>..\..\..\BlockQBase.cpp(64): error C2065: 'unordered_map' : undeclared identifier
+     1>..\..\..\BlockQBase.cpp(64): error C2062: type 'int' unexpected
+     1>..\..\..\BlockQBase.cpp(68): error C2065: 'qid_dim' : undeclared identifier
+     1>..\..\..\BlockQBase.cpp(68): error C2228: left of '.find' must have class/struct/union
+                 type is 'unknown-type'
+     1>..\..\..\BlockQBase.cpp(69): error C3536: 'find_id': cannot be used before it is initialized
+     1>..\..\..\BlockQBase.cpp(69): error C2065: 'qid_dim' : undeclared identifier
+     1>..\..\..\BlockQBase.cpp(69): error C2228: left of '.end' must have class/struct/union
+                 type is 'unknown-type'
+     1>..\..\..\BlockQBase.cpp(70): error C3536: 'find_id': cannot be used before it is initialized
+     1>..\..\..\BlockQBase.cpp(70): error C2227: left of '->second' must point to class/struct/union/generic type
+                 type is 'int'
+     1>..\..\..\BlockQBase.cpp(71): error C3536: 'find_id': cannot be used before it is initialized
+     1>..\..\..\BlockQBase.cpp(71): error C2227: left of '->second' must point to class/struct/union/generic type
+                 type is 'int'
+     1>..\..\..\BlockQBase.cpp(75): error C2065: 'qid_dim' : undeclared identifier
+         main.cpp
+         Parameter.cpp
+         QMat.cpp
+     1>..\..\..\QMat.cpp(170): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\..\QMat.cpp(171): warning C4018: '<' : signed/unsigned mismatch
+         U1Q.cpp
+     1>Done Building Project "E:\Data\DMRGCat\VisualProject\DMRGCat\DMRGCat\DMRGCat.vcxproj" (Build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:05.28
