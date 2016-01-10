@@ -5,6 +5,7 @@
 #include "Parameter.h"
 #include "QMat.h"
 #include "Block.h"
+#include "QWave.h"
 
 
 
@@ -12,17 +13,17 @@ namespace DMRGCat{
 
 class SuperBlock{
 	public:
-		SuperBlock(const Parameter& para, const Block& sys, const Block& m, const Block& n, const Block& env);
+		SuperBlock(Parameter& para, Block& sys, Block& m, Block& n, Block& env);
 		
-		void getTruncU(BlockQBase& UBase, QMat& truncU);
 	private:
+		QWave GsWave;
+		int TotQNo;
+		int Dim;
 		Block* PToSys;
 		Block* PToM;
 		Block* PToN;
 		Block* PToEnv;
-
-		std::vector<std::pair<int,int>> MNQID;
-		std::vector<QMat> SysEnvQMat;
+		Parameter* Para;		
 		
 		
 		void calGroundState();

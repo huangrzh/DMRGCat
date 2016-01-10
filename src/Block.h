@@ -26,6 +26,7 @@ public:
 	void save(std::ofstream& savefile)const;
 	void load(std::ifstream& loadfile);
 	friend std::ostream& operator<<(std::ostream&, const Block&);
+	friend class QWave;
 private:
 	BlockQBase QSpace;
     std::vector<QMat> QOperator;

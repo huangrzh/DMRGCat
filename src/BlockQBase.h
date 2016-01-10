@@ -11,7 +11,7 @@ class BlockQBase{
 public:
 	~BlockQBase();
 	BlockQBase();
-
+	void genSiteQBase();
 	BlockQBase(const BlockQBase &b1, const BlockQBase &b2);
 	void kron(const BlockQBase &b1, const BlockQBase &b2);
 
@@ -25,6 +25,7 @@ public:
 	friend void getKronOrder(const BlockQBase &b1, const BlockQBase &b2, std::map<std::pair<int, int>, int>& startDim);
 	friend class QMat;
 	friend class Block;
+	friend class QWave;
 private:
 	//We set SubQIDDim to make it in defined order. Thus we won't have chaos when update site;
 	std::map<int, int> SubQIDDim;

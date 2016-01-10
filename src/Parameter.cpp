@@ -56,6 +56,23 @@ std::ostream& DMRGCat::operator<<(std::ostream& s, const DMRGCat::Parameter& par
 
 
 
+double DMRGCat::Parameter::getU()const{
+	return U;
+}
+double DMRGCat::Parameter::getT()const{
+	return T;
+}
+int DMRGCat::Parameter::getD()const{
+	return SavedD;
+}
+int DMRGCat::Parameter::getSweepNo()const{
+	return SweepNo;
+}
+int DMRGCat::Parameter::getParticleNo()const{
+	return ParticleNo;
+}
+
+
 
 
 

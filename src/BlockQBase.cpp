@@ -1,7 +1,7 @@
 #include "BlockQBase.h"
 #include "U1Q.h"
 
-DMRGCat::BlockQBase::BlockQBase(){?????????????????}
+DMRGCat::BlockQBase::BlockQBase(){}
 DMRGCat::BlockQBase::~BlockQBase(){}
 
 
@@ -59,7 +59,7 @@ void DMRGCat::BlockQBase::kron(const BlockQBase &b1, const BlockQBase &b2){
 
 void DMRGCat::getKronOrder(const DMRGCat::BlockQBase &b1, const DMRGCat::BlockQBase &b2, std::map<std::pair<int, int>, int>& start_dim){
 	start_dim.clear();
-	std::unordered_map<int, int> qid_dim;
+	std::map<int, int> qid_dim;
 	for (const auto& x1 : b1.SubQIDDim){
 		for (const auto& x2 : b2.SubQIDDim){
 			int id = DMRGCat::getAddID(x1.first, x2.first);

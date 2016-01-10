@@ -1,5 +1,5 @@
-#include "testFiles/testU1Q.h"
-#include "testFiles/testBlockQBase.h"
+#include "../testFiles/testU1Q.h"
+#include "../testFiles/testBlockQBase.h"
 #include "U1Q.h"
 
 

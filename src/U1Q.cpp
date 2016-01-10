@@ -85,6 +85,15 @@ int DMRGCat::U1Q::getID()const{
 }
 
 
+int DMRGCat::U1Q::getChargeNo()const{
+	int charge = 0;
+	for (const auto& x : Q){
+		charge += x;
+	}
+	return charge;
+}
+
+
 int DMRGCat::getAddID(int id1, int id2){
 #ifdef TWO_Q
 	int q1 = id1/MAX_Q + id2/MAX_Q;

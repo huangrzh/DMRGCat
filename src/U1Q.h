@@ -25,6 +25,7 @@ public:
 	int getNoOfQ()const;
 	int getQ(int)const;
 	int getID()const;
+	int getChargeNo()const;
 	
 	
 //operatoration of U1Q

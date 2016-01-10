@@ -9,6 +9,29 @@ DMRGCat::QMat::~QMat(){}
 
 
 
+DMRGCat::QMat::QMat(const std::vector<std::pair<int, int>>& LRIDs, const std::vector<std::pair<int, int>>& LRDims){
+	try{
+		if (LRIDs.size() != LRDims.size()){
+			throw std::runtime_error("Error in QMat LRIDs.size!=LRDims.size");
+		}
+	}
+	catch (const std::exception& e) {
+		std::cerr << e.what() << std::endl;
+	}
+
+	int submatno = 0;
+	LRID = LRIDs;
+	for (int i = 0; i < LRIDs.size(); i++){
+		arma::mat temp_mat;
+		temp_mat.zeros(LRDims.at(i).first, LRDims.at(i).second);
+		SubMat.push_back(temp_mat);
+		RQID2MatNo[LRIDs[i].second] = submatno;
+		LQID2MatNo[LRIDs[i].first] = submatno;
+		submatno++;
+	}
+}
+
+
 
 DMRGCat::QMat::QMat(const std::vector<std::pair<int, int>>& LRIDs, const std::vector<double>& coe){
 	try{
@@ -105,7 +128,7 @@ DMRGCat::QMat::QMat(const QMat& qmat1, const QMat& qmat2, const BlockQBase& bigB
 #endif
 }
 
-
+//qmat1 ~ qmat2  ->  |qmat2.i, qmat1.i>
 void DMRGCat::QMat::kron(const QMat& qmat1, const QMat& qmat2, const BlockQBase& bigBase){
 	clear();
 	int no = 0;
@@ -324,4 +347,9 @@ void DMRGCat::QMat::trunc(const BlockQBase& UBase, const QMat& truncU){
 		rno = truncU.RQID2MatNo.at(x.first);
 		SubMat.at(no) = (truncU.SubMat.at(lno).t()) * (SubMat.at(no)) * (truncU.SubMat.at(rno));
 	}
+}
+
+
+bool DMRGCat::QMat::getIsFermion()const{
+	return IsFermion;
 }
