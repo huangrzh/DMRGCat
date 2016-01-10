@@ -45,25 +45,29 @@ public:
 	// --------------------------operations----------------------------------------------------
 	// out += lamda in
 	friend void time(const double& lamda, const QMat& in, QMat& out);
+	friend void timeLSign(const double& lamda, const QMat& in, QMat& out);
 
 	// out += O * in
 	friend void leftTime(const QMat& O, const QMat& in, QMat& out);
 
 	// out += lamda O * in
 	friend void leftTime(const double& lamda, const QMat& O, const QMat& in, QMat& out);
+	friend void leftTimeLSign(const double& lamda, const QMat& O, const QMat& in, QMat& out);
 
-	// out += in * O
+	// out += in * O.t
 	friend void rightTime(const QMat& O, const QMat& in, QMat& out);
+	friend void rightTimeLSign(const double& lamda, const QMat& O, const QMat& in, QMat& out);
 
-	// out += lamda in * O
+	// out += lamda in * O.t
 	friend void rightTime(const double& lamda, const QMat& O, const QMat& in, QMat& out);
 
 
 	// out += leftO * in * rightO
 	friend void lrTime(const QMat& leftO, const QMat& rightO, const QMat& in, QMat& out);
 
-	// out += lamda leftO * in * rightO
+	// out += lamda leftO * in * rightO.t
 	friend void lrTime(const double& lamda, const QMat& leftO, const QMat& rightO, const QMat& in, QMat& out);
+	friend void lrTimeLSign(const double& lamda, const QMat& leftO, const QMat& rightO, const QMat& in, QMat& out);
 	// --------------------------operations----------------------------------------------------
 	//-----------------------------------------------------------------------------------------
 	
