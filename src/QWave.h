@@ -9,19 +9,20 @@
 
 namespace DMRGCat{
 
-
+//The qwave is settled as |m, sys, n, env>. 
+//When dealing with fermion system, the sign needs to carefully treated;  
 class QWave{
 	
 
 	public:	
 		QWave();
 		~QWave();
-		QWave(int totq, Block& sys, Block& m, Block& n, Block& env);
-		int setWave(int totq, Block& sys, Block& m, Block& n, Block& env);
+		QWave(int totqID, Block& sys, Block& m, Block& n, Block& env);
+		int setWave(int totqID, Block& sys, Block& m, Block& n, Block& env);
 		void getTruncU(BlockQBase& UBase, QMat& truncU);
 	private:
 		int Dim;
-		int TotQNo;
+		int TotQID;
 		IntPair2IntHashMap MNQID2SysEnvNo;
 		std::vector<QMat> SysEnvQMat;
 
@@ -45,7 +46,7 @@ class QWave{
 			void SysNEnvAct(double lamda, const QMat& O1, const QMat& O2, const QMat& O3, QWave& out)const;
 			void MNEnvAct(double lamda, const QMat& O1, const QMat& O2, const QMat& O3, QWave& out)const;
 
-		void fourBody(const QMat& O1, const QMat& O2, const QMat& O3, const QMat& O4, QWave& out)const;
+		void fourBody(double lamda, const QMat& O1, const QMat& O2, const QMat& O3, const QMat& O4, QWave& out)const;
 };
 	
 }

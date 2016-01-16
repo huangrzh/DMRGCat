@@ -120,6 +120,53 @@ int DMRGCat::getID(const std::vector<int>& var){
 
 
 #ifdef FERMION
+
+
+bool DMRGCat::hasSign(int id){
+#ifdef TWO_Q
+	int q1 = id / MAX_Q;
+	int q2 = id%MAX_Q;
+	if ((q1 + q2) % 2 == 0){
+		return false;
+	}
+	else{
+		return true;
+	}
+#endif
+#ifdef ONE_Q
+	if (id % 2 == 1){
+		return true;
+	}
+	else{
+		return false;
+	}
+#endif
+}
+
+
+
+bool DMRGCat::hasSign(int lqid, int rqid){
+#ifdef TWO_Q
+	int lq1 = lqid / MAX_Q;
+	int lq2 = lqid % MAX_Q;
+	int rq1 = rqid / MAX_Q;
+	int rq2 = rqid % MAX_Q;
+	if ((lq1 + rq1) % 2 == 1 || (lq2 + rq2) % 2 == 1){
+		return true;
+	}
+	else{
+		return false;
+	}
+#endif
+#ifdef ONE_Q
+	if ((lqid + rqid) % 2 == 1){
+		return true;
+	}
+	else{
+		return false;
+	}
+#endif
+}
 int DMRGCat::getFermionSign(int id){
 #ifdef TWO_Q
 	int q1 = id / MAX_Q;
@@ -163,6 +210,8 @@ int DMRGCat::getFermionSign(int lqid, int rqid){
 	}
 #endif
 }
+
+
 #endif
 
 

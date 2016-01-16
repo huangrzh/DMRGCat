@@ -18,6 +18,7 @@ public:
 	QMat(const std::vector<std::pair<int, int>>& LRIDs, const std::vector<double>&);
 	QMat(const std::vector<std::pair<int, int>>& LRIDs);
 	QMat(const std::vector<std::pair<int, int>>& LRIDs, const std::vector<std::pair<int,int>>& LRDims);
+		void zero(const std::vector<std::pair<int, int>>& LRIDs, const std::vector<std::pair<int, int>>& LRDims);
 	~QMat();
 
 	void kron(const QMat& qmat1, const QMat& qmat2, const BlockQBase& bigBase);

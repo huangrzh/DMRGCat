@@ -48,6 +48,8 @@ private:
 };
 
 #ifdef FERMION
+bool hasSign(int qid);
+bool hasSign(int lid, int rid);
 int getFermionSign(int lqid, int rqid);
 int getFermionSign(int id);
 #endif

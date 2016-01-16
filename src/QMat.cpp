@@ -10,6 +10,12 @@ DMRGCat::QMat::~QMat(){}
 
 
 DMRGCat::QMat::QMat(const std::vector<std::pair<int, int>>& LRIDs, const std::vector<std::pair<int, int>>& LRDims){
+	zero(LRIDs,LRDims);
+}
+
+
+void DMRGCat::QMat::zero(const std::vector<std::pair<int, int>>& LRIDs, const std::vector<std::pair<int, int>>& LRDims){
+	clear();
 	try{
 		if (LRIDs.size() != LRDims.size()){
 			throw std::runtime_error("Error in QMat LRIDs.size!=LRDims.size");
@@ -18,7 +24,6 @@ DMRGCat::QMat::QMat(const std::vector<std::pair<int, int>>& LRIDs, const std::ve
 	catch (const std::exception& e) {
 		std::cerr << e.what() << std::endl;
 	}
-
 	int submatno = 0;
 	LRID = LRIDs;
 	for (int i = 0; i < LRIDs.size(); i++){
@@ -30,7 +35,6 @@ DMRGCat::QMat::QMat(const std::vector<std::pair<int, int>>& LRIDs, const std::ve
 		submatno++;
 	}
 }
-
 
 
 DMRGCat::QMat::QMat(const std::vector<std::pair<int, int>>& LRIDs, const std::vector<double>& coe){
@@ -353,3 +357,147 @@ void DMRGCat::QMat::trunc(const BlockQBase& UBase, const QMat& truncU){
 bool DMRGCat::QMat::getIsFermion()const{
 	return IsFermion;
 }
+
+
+
+
+
+
+//-----------------------------------------------------------------------------------
+//------------------------------QMat operations--------------------------------------
+//-----------------------------------------------------------------------------------
+
+
+
+
+void DMRGCat::time(const double& lamda, const QMat& in, QMat& out){
+	int matNo = in.SubMat.size();
+	for (int i = 0; i < matNo; i++){
+		out.SubMat.at(i) += lamda * in.SubMat.at(i);
+	}
+}
+
+
+
+
+
+void DMRGCat::timeLSign(const double& lamda, const QMat& in, QMat& out){
+	int matNo = in.SubMat.size();
+	double coe = 1.0;
+	for (int i = 0; i < matNo; i++){
+		coe = lamda * (double)DMRGCat::getFermionSign(in.LRID.at(i).first);
+		out.SubMat.at(i) += coe * in.SubMat.at(i);
+	}
+}
+
+
+
+
+// out += O * in
+void DMRGCat::leftTime(const QMat& O, const QMat& in, QMat& out){
+	for (const auto& inx : in.LQID2MatNo){
+		const auto x = O.RQID2MatNo.find(inx.first);
+		if (x != O.RQID2MatNo.end()){
+			out.SubMat.at(out.LQID2MatNo.at(O.R2LID.at(x->first))) += O.SubMat.at(x->second) * in.SubMat.at(inx.second);
+		}
+	}
+}
+
+
+
+void DMRGCat::leftTime(const double& lamda, const QMat& O, const QMat& in, QMat& out){
+	for (const auto& inx : in.LQID2MatNo){
+		const auto x = O.RQID2MatNo.find(inx.first);
+		if (x != O.RQID2MatNo.end()){
+			out.SubMat.at(out.LQID2MatNo.at(O.R2LID.at(x->first))) += lamda * O.SubMat.at(x->second) * in.SubMat.at(inx.second);
+		}
+	}
+}
+
+
+void DMRGCat::leftTimeLSign(const double& lamda, const QMat& O, const QMat& in, QMat& out){
+	double coe = 1.0;
+	for (const auto& inx : in.LQID2MatNo){
+		const auto x = O.RQID2MatNo.find(inx.first);
+		if (x != O.RQID2MatNo.end()){
+			coe = lamda * (double)DMRGCat::getFermionSign(inx.first);
+			out.SubMat.at(out.LQID2MatNo.at(O.R2LID.at(x->first))) += coe * O.SubMat.at(x->second) * in.SubMat.at(inx.second);
+		}
+	}
+}
+
+
+
+
+// out += in * O.t
+void DMRGCat::rightTime(const QMat& O, const QMat& in, QMat& out){
+	for (const auto& inx : in.RQID2MatNo){
+		const auto x = O.RQID2MatNo.find(inx.first);
+		if (x != O.RQID2MatNo.end()){
+			out.SubMat.at(out.RQID2MatNo.at(O.R2LID.at(x->first))) += in.SubMat.at(inx.second) * O.SubMat.at(x->second).t();
+		}
+	}
+}
+
+
+
+void DMRGCat::rightTime(const double& lamda, const QMat& O, const QMat& in, QMat& out){
+	for (const auto& inx : in.RQID2MatNo){
+		const auto x = O.RQID2MatNo.find(inx.first);
+		if (x != O.RQID2MatNo.end()){
+			out.SubMat.at(out.RQID2MatNo.at(O.R2LID.at(x->first))) += coe * in.SubMat.at(inx.second) * O.SubMat.at(x->second).t();
+		}
+	}
+}
+
+
+void DMRGCat::rightTimeLSign(const double& lamda, const QMat& O, const QMat& in, QMat& out){
+	double coe = 1.0;
+	for (const auto& inx : in.RQID2MatNo){
+		const auto x = O.RQID2MatNo.find(inx.first);
+		if (x != O.RQID2MatNo.end()){
+			coe = lamda * (double)DMRGCat::getFermionSign(in.R2LID.at(inx.first));
+			out.SubMat.at(out.RQID2MatNo.at(O.R2LID.at(x->first))) += coe * in.SubMat.at(inx.second) * O.SubMat.at(x->second).t();
+		}
+	}
+}
+
+
+
+// out += leftO * in * rightO
+void DMRGCat::lrTime(const QMat& leftO, const QMat& rightO, const QMat& in, QMat& out){
+	for (const auto& inx : in.LRID){
+		const auto lx = leftO.RQID2MatNo.find(inx.first);
+		const auto rx = rightO.RQID2MatNo.find(inx.second);
+		if (lx != leftO.RQID2MatNo.end() && rx != rightO.RQID2MatNo.end()){
+			out.SubMat.at(out.RQID2MatNo.at(rightO.R2LID.at(rx->first))) += leftO.SubMat.at(lx->second) * in.LQID2MatNo.at(inx.first) * rightO.SubMat.at(rx->second).t();
+		}
+	}
+}
+
+
+
+void DMRGCat::lrTime(const double& lamda, const QMat& leftO, const QMat& rightO, const QMat& in, QMat& out){
+	for (const auto& inx : in.LRID){
+		const auto lx = leftO.RQID2MatNo.find(inx.first);
+		const auto rx = rightO.RQID2MatNo.find(inx.second);
+		if (lx != leftO.RQID2MatNo.end() && rx != rightO.RQID2MatNo.end()){
+			out.SubMat.at(out.RQID2MatNo.at(rightO.R2LID.at(rx->first))) += lamda * leftO.SubMat.at(lx->second) * in.LQID2MatNo.at(inx.first) * rightO.SubMat.at(rx->second).t();
+		}
+	}
+}
+
+
+void DMRGCat::lrTimeLSign(const double& lamda, const QMat& leftO, const QMat& rightO, const QMat& in, QMat& out){
+	double coe = 1.0;
+	for (const auto& inx : in.LRID){
+		const auto lx = leftO.RQID2MatNo.find(inx.first);
+		const auto rx = rightO.RQID2MatNo.find(inx.second);
+		if (lx != leftO.RQID2MatNo.end() && rx != rightO.RQID2MatNo.end()){
+			coe = lamda * (double)DMRGCat::getFermionSign(inx.first);
+			out.SubMat.at(out.RQID2MatNo.at(rightO.R2LID.at(rx->first))) += lamda * leftO.SubMat.at(lx->second) * in.LQID2MatNo.at(inx.first) * rightO.SubMat.at(rx->second).t();
+		}
+	}
+}
+// --------------------------operations----------------------------------------------------
+//-----------------------------------------------------------------------------------------
