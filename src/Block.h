@@ -16,7 +16,7 @@ class Block{
 public:
 	Block(const Parameter& para);
 	~Block();
-	Block(const Block& old, const Block& added);
+	Block(const Parameter& para, const Block& old);
 
 
 	void trunc(const BlockQBase& UBase, const QMat& truncU);
@@ -27,6 +27,7 @@ public:
 	void load(std::ifstream& loadfile);
 	friend std::ostream& operator<<(std::ostream&, const Block&);
 	friend class QWave;
+	friend class SuperBlock;
 private:
 	BlockQBase QSpace;
     std::vector<QMat> QOperator;

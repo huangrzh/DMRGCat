@@ -34,13 +34,18 @@ public:
 
 
 	void trunc(const BlockQBase& UBase, const QMat& truncU);
-
+	void trans(const QMat&);
+	void trans();
+	void add(const QMat& added, const BlockQBase& space);
+	void time(double lamda);
 #ifdef FERMION
 	bool getIsFermion()const;
 #endif
 
 	friend class QWave;
 
+
+	
 
 	//-----------------------------------------------------------------------------------------
 	// --------------------------operations----------------------------------------------------
@@ -72,7 +77,8 @@ public:
 	// --------------------------operations----------------------------------------------------
 	//-----------------------------------------------------------------------------------------
 	
-
+	int v2QMat(const double *f);
+	int QMat2v(double *f)const;
 private:
 
 #ifdef FERMION

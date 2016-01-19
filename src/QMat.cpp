@@ -354,13 +354,77 @@ void DMRGCat::QMat::trunc(const BlockQBase& UBase, const QMat& truncU){
 }
 
 
+void DMRGCat::QMat::trans(const QMat& m){
+	clear();
+	int size = m.LRID.size();
+	for (int i = 0; i < size; i++){
+		LRID.push_back({m.LRID.at(i).second, m.LRID.at(i).first});
+		R2LID[m.LRID.at(i).first] = m.LRID.at(i).second;
+	}
+	LQID2MatNo = m.RQID2MatNo;
+	RQID2MatNo = m.LQID2MatNo;
+	SubMat = m.SubMat;
+#ifdef FERMION
+	IsFermion = m.IsFermion;
+#endif
+
+}
+
+void DMRGCat::QMat::trans(){
+	std::unordered_map<int, int> r2l;
+	std::vector<std::pair<int, int>> lr;
+	int size = LRID.size();
+	
+	for (int i = 0; i < size; i++){
+		lr.push_back({ LRID.at(i).second, LRID.at(i).first });
+		r2l[LRID.at(i).first] = LRID.at(i).second;
+	}
+	LRID = lr;
+	R2LID = r2l;
+	auto x = LQID2MatNo;
+	LQID2MatNo = RQID2MatNo;
+	RQID2MatNo = x;
+}
+
+
+
+void DMRGCat::QMat::add(const QMat& added, const BlockQBase& space){
+	std::vector<int> raddedRID;
+	for (const auto& x : space.SubQIDDim){
+		auto findx1 = RQID2MatNo.find(x.first);
+		auto findx2 = added.RQID2MatNo.find(x.first);
+		if (findx1 != RQID2MatNo.end() && findx2!=added.RQID2MatNo.end()){
+			SubMat.at(findx1->second) += added.SubMat.at(findx2->second);
+		}
+		else if (findx1 == RQID2MatNo.end() && findx2 != added.RQID2MatNo.end()){
+			raddedRID.push_back(x.first);
+		}
+		else{ ; }
+	}
+
+	for (const auto& x : raddedRID){
+		int lid = added.R2LID.at(x);
+		LRID.push_back({lid,x});
+		R2LID[x] = lid;
+		SubMat.push_back(added.SubMat.at(added.RQID2MatNo(x)));
+		RQID2MatNo[x] = SubMat.size();
+		LQID2MatNo[x] = SubMat.size();
+	}
+}
+
+
+
 bool DMRGCat::QMat::getIsFermion()const{
 	return IsFermion;
 }
 
 
 
-
+void DMRGCat::QMat::time(double lamda){
+	for (auto& x : SubMat){
+		x = x * lamda;
+	}
+}
 
 
 //-----------------------------------------------------------------------------------
@@ -501,3 +565,24 @@ void DMRGCat::lrTimeLSign(const double& lamda, const QMat& leftO, const QMat& ri
 }
 // --------------------------operations----------------------------------------------------
 //-----------------------------------------------------------------------------------------
+
+
+
+
+int DMRGCat::QMat::v2QMat(const double* f){
+	int id = 0;
+	for (auto& x:SubMat){
+		memcpy(x.memptr(), &f[id], x.n_elem*sizeof(double));
+		id += x.n_elem;
+	}
+	return id;
+}
+
+int DMRGCat::QMat::QMat2v(double* f) const{
+	int id = 0;
+	for (const auto& x:SubMat)	{
+		memcpy(&f[id], x.memptr(), x.n_elem*sizeof(double));
+		id += x.n_elem;
+	}
+	return id;
+}

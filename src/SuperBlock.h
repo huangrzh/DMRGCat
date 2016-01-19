@@ -16,21 +16,24 @@ class SuperBlock{
 		SuperBlock(Parameter& para, Block& sys, Block& m, Block& n, Block& env);
 		
 	private:
-		QWave GsWave;
+		QWave GsWave, GsWave0;
 		int TotQNo;
 		int Dim;
-		Block* PToSys;
+		Block* PToS;
 		Block* PToM;
 		Block* PToN;
-		Block* PToEnv;
+		Block* PToE;
 		Parameter* Para;		
 		
 		
 		void calGroundState();
+		void in2out(const QWave& in, QWave& out);
+		void f1tof2(const double *f1, double *f2);
 		void calPhysicalQuantity();
 		
 		void preWaveStep1();
 		void preWaveStep2();
+
 };
 
 	

@@ -25,7 +25,32 @@ namespace DMRGCat{
 	//IntPair
 	typedef std::pair<int,int> IntPair;
 
-	
+	enum QOp{
+		// 0 -- eye
+		// 1 -- Cup
+		// 2 -- CupDag
+		// 3 -- Cdown
+		// 4 -- CdownDag
+		// 5 -- Nup
+		// 6 -- Ndown
+		// 7 -- SiteH
+		Eye = 0,
+		Cup,
+		CupDag,
+		Cdown,
+		CdownDag,
+		Nup,
+		Ndown,
+		SiteH,
+	};
+
+
+	enum SMNE{
+		BlockS = 1,
+		BlockM,
+		BlockN,
+		BlockE,
+	};
 }
 
 

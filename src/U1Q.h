@@ -10,6 +10,8 @@
 
 namespace DMRGCat{
 
+
+//for fermion hubbard modle, (up,down)
 class U1Q{
 	
 public:

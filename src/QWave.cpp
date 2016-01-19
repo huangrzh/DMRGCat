@@ -645,3 +645,38 @@ void DMRGCat::QWave::fourBody(double lamda, const QMat& O1, const QMat& Om, cons
 		}
 	}
 }
+
+
+
+
+void DMRGCat::QWave::v2QWave(const double* f)
+{
+	int id = 0;
+	for (auto& x:SysEnvQMat){
+		id += x.v2QMat(&f[id]);
+	}
+	try{
+		if (id != Dim){
+			throw std::runtime_error("Error in QWave v2QWave id != Dim");
+		}
+	}
+	catch (const std::exception& e) {
+		std::cerr << e.what() << std::endl;
+	}		
+}
+
+void DMRGCat::QWave::QWave2v(double* f) const
+{
+	int id = 0;
+	for (const auto& x:SysEnvQMat)	{
+		id += x.QMat2v(&f[id]);
+	}
+	try{
+		if (id != Dim){
+			throw std::runtime_error("Error in QWave QWave2v id != Dim");
+		}
+	}
+	catch (const std::exception& e) {
+		std::cerr << e.what() << std::endl;
+	}
+}
