@@ -175,6 +175,22 @@ void DMRGCat::QWave::twoBody(int flagl, const QMat& Ol, int flagr, const QMat& O
 }
 
 
+void DMRGCat::QWave::twoBody(int flagl, const QMat& Ol, int flagr, const QMat& Or, const double& lamda, QWave& out)const{
+	int flag = flagl * 10 + flagr;
+
+	switch (flag){
+	case 12:{SysMAct(lamda, Ol, Or, out); break; }
+	case 13:{SysNAct(lamda, Ol, Or, out); break; }
+	case 14:{SysEnvAct(lamda, Ol, Or, out); break; }
+	case 23:{MNAct(lamda, Ol, Or, out);	break; }
+	case 24:{MEnvAct(lamda, Ol, Or, out); break; }
+	case 34:{NEnvAct(lamda, Ol, Or, out); break; }
+	default:
+		break;
+	}
+}
+
+
 void DMRGCat::QWave::SysMAct(double lamda, const QMat& Ol, const QMat& Or, QWave& out)const{
 	if (Ol.getIsFermion()){
 		for (const auto& x : MNQID2SysEnvNo){

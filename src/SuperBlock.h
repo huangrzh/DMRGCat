@@ -19,11 +19,11 @@ class SuperBlock{
 		QWave GsWave, GsWave0;
 		int TotQNo;
 		int Dim;
-		Block* PToS;
-		Block* PToM;
-		Block* PToN;
-		Block* PToE;
-		Parameter* Para;		
+		Block *PToS;
+		Block *PToM;
+		Block *PToN;
+		Block *PToE;
+		Parameter *Para;		
 		
 		
 		void calGroundState();

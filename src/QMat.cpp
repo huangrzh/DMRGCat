@@ -509,7 +509,7 @@ void DMRGCat::rightTime(const double& lamda, const QMat& O, const QMat& in, QMat
 	for (const auto& inx : in.RQID2MatNo){
 		const auto x = O.RQID2MatNo.find(inx.first);
 		if (x != O.RQID2MatNo.end()){
-			out.SubMat.at(out.RQID2MatNo.at(O.R2LID.at(x->first))) += coe * in.SubMat.at(inx.second) * O.SubMat.at(x->second).t();
+			out.SubMat.at(out.RQID2MatNo.at(O.R2LID.at(x->first))) += lamda * in.SubMat.at(inx.second) * O.SubMat.at(x->second).t();
 		}
 	}
 }
@@ -585,4 +585,29 @@ int DMRGCat::QMat::QMat2v(double* f) const{
 		id += x.n_elem;
 	}
 	return id;
+}
+
+
+
+
+void DMRGCat::QMat::print()const{
+	std::cout << std::endl << std::endl;
+	int size = LRID.size();
+	for (int i = 0; i < size; i++){
+		std::cout << "*****************************************\n";
+		std::cout << U1Q(LRID.at(i).first) << U1Q(LRID.at(i).second) << "\n";
+		unsigned int row = { SubMat.at(i).n_rows };
+		unsigned int col = { SubMat.at(i).n_cols };
+		std::cout << " " << row << " * " << col << "\n";
+		SubMat.at(i).print("SubMat:");
+		std::cout << std::endl;
+	}
+	std::cout << std::endl << std::endl;
+}
+
+
+
+void DMRGCat::QMat::print(std::string s)const{
+	std::cout << s << "\n";
+	print();
 }

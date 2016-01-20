@@ -2,9 +2,10 @@
 #include "Block.h"
 #include "setting.h"
 
-
+DMRGCat::Block::~Block(){}
 //Single site block;
 DMRGCat::Block::Block(const Parameter& para){
+	QSpace.genSiteQBase();
 #ifdef FERMION_HUBBARD	
 	//q(up,down)
 	int id00 = DMRGCat::getID({ 0, 0 });
@@ -25,10 +26,10 @@ DMRGCat::Block::Block(const Parameter& para){
 
 
 	//CupDag
-	std::vector<std::pair<int, int>> idvec;
-	idvec.push_back({ id10, id00 });
-	idvec.push_back({ id11, id01 });
-	QMat cupd(idvec);
+	std::vector<std::pair<int, int>> idvec2;
+	idvec2.push_back({ id10, id00 });
+	idvec2.push_back({ id11, id01 });
+	QMat cupd(idvec2);
 	QOperator.push_back(cupd);
 
 
@@ -46,9 +47,9 @@ DMRGCat::Block::Block(const Parameter& para){
 	idvec.clear();
 	idvec.push_back({ id01, id00 });
 	idvec.push_back({ id11, id10 });
-	std::vector<double> coe = { 1, -1 };
-	QMat cdown(idvec, coe);
-	QOperator.push_back(cdown);
+	std::vector<double> coe2 = { 1, -1 };
+	QMat cdown2(idvec, coe2);
+	QOperator.push_back(cdown2);
 
 
 	//Nup
@@ -126,10 +127,6 @@ DMRGCat::Block::Block(const Parameter& para, const Block& old){
 	tempO.kron(old.QOperator.at(Nup), added.QOperator.at(Ndown), QSpace);
 	tempO.time(para.getU());
 	QOperator.at(SiteH).add(tempO, QSpace);
-
-
-
-	????????????????????
 }
 
 
@@ -138,4 +135,19 @@ void DMRGCat::Block::trunc(const BlockQBase& UBase, const QMat& truncU){
 	for (auto& x : QOperator){
 		x.trunc(UBase, truncU);
 	}
+}
+
+
+
+void DMRGCat::Block::print()const{
+	for (int i = 0; i < QOperator.size(); i++){
+		std::cout << "QONo = " << i << std::endl;
+		QOperator.at(i).print();
+	}
+}
+
+
+void DMRGCat::Block::print(std::string s)const{
+	std::cout << s << "\n";
+	print();
 }

@@ -6,8 +6,14 @@ DMRGCat::Parameter::Parameter(){}
 
 
 void DMRGCat::Parameter::load(std::ifstream& s){
+
 #ifdef FERMION_HUBBARD
+
 	char x = 'q';
+	while (x != '=') s >> x;
+	s >> ChainL;
+
+	x = 'q';
 	while (x != '=') s >> x;
 	s >> T;
 
@@ -37,8 +43,9 @@ void DMRGCat::Parameter::load(std::ifstream& s){
 
 std::ostream& DMRGCat::operator<<(std::ostream& s, const DMRGCat::Parameter& para){
 #ifdef FERMION_HUBBARD
-    s << "Parameter: \n\n" 
+	s << "Parameter: \n\n"
 
+	  << "L = " << para.ChainL << std::endl
 
       << "t = " << para.T << std::endl 
 
@@ -74,9 +81,6 @@ int DMRGCat::Parameter::getParticleNo()const{
 
 
 
-
-
-
-
-
-
+void DMRGCat::Parameter::print(){
+	std::cout << *this;
+}

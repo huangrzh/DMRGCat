@@ -6,6 +6,9 @@ DMRGCat::BlockQBase::~BlockQBase(){}
 
 
 void DMRGCat::BlockQBase::genSiteQBase(){
+	if (SubQIDDim.size() > 0){
+		SubQIDDim.clear();
+	}
 #ifdef FERMION_HUBBARD
 	for (int i = 0; i < 2; i++){
 		for (int j = 0; j < 2; j++){

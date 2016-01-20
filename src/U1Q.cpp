@@ -16,15 +16,16 @@ DMRGCat::U1Q::U1Q(){
 
 DMRGCat::U1Q::U1Q(int inputid){
 	ID = inputid;
-	Q.resize(Num);
 #ifdef TWO_Q
 	Num = 2;
+	Q.resize(Num);
 	int max = MAX_Q;
 	Q[0] = ID/max;
 	Q[1] = ID%max;
 #endif
 #ifdef ONE_Q
 	Num = 1;
+	Q.resize(Num);
 	Q[0] = ID;
 #endif
 	
@@ -296,9 +297,9 @@ std::ostream& DMRGCat::operator<<(std::ostream& output,const DMRGCat::U1Q& GQvar
 #endif
 #ifdef TWO_Q
        for(int i=0;i<1;i++){
-          output<<std::setw(3)<<GQvar.Q[i]<<",";
+          output << GQvar.Q[i] <<" , ";
        }
-       output<<std::setw(3)<<GQvar.Q[1]<<"  )";
+       output << GQvar.Q[1] <<")  ";
 #endif
     return output;
 }

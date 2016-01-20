@@ -12,6 +12,8 @@ DMRGCat::SuperBlock::SuperBlock(Parameter& para, Block& sys, Block& m, Block& n,
 
 	Dim = GsWave.setWave(TotQNo,sys,m,n,env);	
 	GsWave0.setWave(TotQNo, sys, m, n, env);
+
+	calGroundState();
 }
 
 void DMRGCat::SuperBlock::f1tof2(const double *f1, double *f2){
