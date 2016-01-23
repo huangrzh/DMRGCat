@@ -35,10 +35,14 @@ DMRGCat::U1Q::U1Q(int inputid){
 DMRGCat::U1Q::U1Q(const std::vector<int>& inputQ){
 #ifdef TWO_Q
 	Num = 2;
+	Q.resize(Num);
+	Q = inputQ;
 	ID = MAX_Q*Q.at(0) + Q.at(1);
 #endif
 #ifdef ONE_Q
 	Num = 1;
+	Q.resize(Num);
+	Q = inputQ;
 	ID = Q.at(0);
 #endif
 	try {
@@ -49,22 +53,24 @@ DMRGCat::U1Q::U1Q(const std::vector<int>& inputQ){
 	catch (const std::exception& e) {
 		std::cerr << e.what() << std::endl;
 	}
-	Q.resize(Num);
-	Q = inputQ;
+	
 }
 
 
 DMRGCat::U1Q::U1Q(int* inputQ){	
 #ifdef TWO_Q
 	Num = 2;
-	ID = MAX_Q*Q.at(0) + Q.at(1);
+	Q.resize(2);
+	Q[0] = inputQ[0];
+	Q[1] = inputQ[1];
+	ID = MAX_Q*inputQ[0] + inputQ[1];
 #endif
 #ifdef ONE_Q
 	Num = 1;
-	ID = Q.at(0);
+	Q.resize(1);
+	Q[0] = inputQ[0];
+	ID = inputQ[0];
 #endif
-	std::vector<int> qs(inputQ, inputQ + Num);
-	Q = qs;
 }
 
 
@@ -152,7 +158,11 @@ bool DMRGCat::hasSign(int lqid, int rqid){
 	int lq2 = lqid % MAX_Q;
 	int rq1 = rqid / MAX_Q;
 	int rq2 = rqid % MAX_Q;
-	if ((lq1 + rq1) % 2 == 1 || (lq2 + rq2) % 2 == 1){
+	int deltaq = lq1 + lq2 - rq1 - rq2;
+	if (deltaq < 0){
+		deltaq = -deltaq;
+	}
+	if (deltaq % 2 == 1){
 		return true;
 	}
 	else{

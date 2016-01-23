@@ -2,22 +2,19 @@
 #include <istream>
 #include "../testFiles/testU1Q.h"
 #include "../testFiles/testBlockQBase.h"
+#include "../testFiles/testQMat.h"
+#include "../testFiles/testBlock.h"
 #include "U1Q.h"
 #include "Parameter.h"
 #include "Block.h"
 
 
 int main(){	
-	
-	std::ifstream ifile("SaveData/Para.txt");
-	
-	DMRGCat::Parameter para;
-	para.load(ifile);
-	ifile.close();
-	para.print();
+	//testU1Q();
+	//testBlockQBase();	
+	//testQMat();
+	testBlock();
 
-	DMRGCat::Block block(para);
-	block.print();
 
 #ifdef VISUAL
 	system("pause");

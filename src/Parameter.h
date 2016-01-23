@@ -12,6 +12,7 @@ namespace DMRGCat{
 class Parameter{
 	public:
 		Parameter();
+		void print();
 		void load(std::ifstream& loadfile);
 		friend std::ostream& operator<<(std::ostream& s, const Parameter& para);
 
@@ -25,6 +26,7 @@ class Parameter{
 	private:
 
 #ifdef FERMION_HUBBARD
+		int ChainL;
 		double T;
 		double U;
 		int ParticleNo;	   //Particle number of the whold system	

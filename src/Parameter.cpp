@@ -45,17 +45,17 @@ std::ostream& DMRGCat::operator<<(std::ostream& s, const DMRGCat::Parameter& par
 #ifdef FERMION_HUBBARD
 	s << "Parameter: \n\n"
 
-	  << "L = " << para.ChainL << std::endl
+		<< "L = " << para.ChainL << std::endl
 
-      << "t = " << para.T << std::endl 
+		<< "t = " << para.T << std::endl
 
-      << "u = " << para.U << std::endl
+		<< "u = " << para.U << std::endl
 
-      << "SavedD = " << para.SavedD  << std::endl 
-	  
-	  << "ParticleNo = " << para.ParticleNo  << std::endl 
- 
-      << "MaxSweepNo = " << para.SweepNo << std::endl;
+		<< "SavedD = " << para.SavedD << std::endl
+
+		<< "ParticleNo = " << para.ParticleNo << std::endl
+
+		<< "MaxSweepNo = " << para.SweepNo << std::endl << std::endl;
 #endif
 	      
     return s;

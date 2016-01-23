@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <armadillo>
 #include <ostream>
+#include <string>
 #include "setting.h"
 #include "BlockQBase.h"
 
@@ -14,7 +15,8 @@ namespace DMRGCat{
 class QMat{
 	
 public:
-	QMat();                        //LRIDs
+	QMat();                       
+	QMat(const QMat& var);
 	QMat(const std::vector<std::pair<int, int>>& LRIDs, const std::vector<double>&);
 	QMat(const std::vector<std::pair<int, int>>& LRIDs);
 	QMat(const std::vector<std::pair<int, int>>& LRIDs, const std::vector<std::pair<int,int>>& LRDims);
@@ -26,7 +28,7 @@ public:
 		void matCompress(arma::mat& newMat, int dimL, const arma::mat& old, int dimR);
 	friend std::ostream& operator<<(std::ostream&, const QMat&);
 
-
+	void operator=(const QMat& var);
 	void eyeQMat(const BlockQBase&);
 	void clear();
 	void save(std::ofstream& savefile)const;
@@ -43,6 +45,7 @@ public:
 #endif
 
 	friend class QWave;
+	friend class Block;
 
 
 	
@@ -79,12 +82,13 @@ public:
 	
 	int v2QMat(const double *f);
 	int QMat2v(double *f)const;
+	void print()const;
+	void print(std::string)const;
 private:
 
 #ifdef FERMION
 	bool IsFermion;
 #endif
-
 	std::unordered_map<int, int> RQID2MatNo;
 	std::unordered_map<int, int> LQID2MatNo;
 	std::unordered_map<int, int> R2LID;

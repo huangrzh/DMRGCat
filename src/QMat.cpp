@@ -7,15 +7,36 @@ DMRGCat::QMat::~QMat(){}
 
 
 
+DMRGCat::QMat::QMat(const QMat& var){
+	IsFermion = var.IsFermion;
+	RQID2MatNo = var.RQID2MatNo;
+	LQID2MatNo = var.LQID2MatNo;
+	R2LID = var.R2LID;
+	LRID = var.LRID;
+	SubMat = var.SubMat;
+}
+
+
+void DMRGCat::QMat::operator=(const QMat& var){
+	IsFermion = var.IsFermion;
+	RQID2MatNo = var.RQID2MatNo;
+	LQID2MatNo = var.LQID2MatNo;
+	R2LID = var.R2LID;
+	LRID = var.LRID;
+	SubMat = var.SubMat;
+}
 
 
 DMRGCat::QMat::QMat(const std::vector<std::pair<int, int>>& LRIDs, const std::vector<std::pair<int, int>>& LRDims){
+	IsFermion = DMRGCat::hasSign(LRIDs.at(0).first, LRIDs.at(0).second);
 	zero(LRIDs,LRDims);
 }
 
 
 void DMRGCat::QMat::zero(const std::vector<std::pair<int, int>>& LRIDs, const std::vector<std::pair<int, int>>& LRDims){
 	clear();
+
+	IsFermion = DMRGCat::hasSign(LRIDs.at(0).first, LRIDs.at(0).second);
 	try{
 		if (LRIDs.size() != LRDims.size()){
 			throw std::runtime_error("Error in QMat LRIDs.size!=LRDims.size");
@@ -27,6 +48,7 @@ void DMRGCat::QMat::zero(const std::vector<std::pair<int, int>>& LRIDs, const st
 	int submatno = 0;
 	LRID = LRIDs;
 	for (int i = 0; i < LRIDs.size(); i++){
+		R2LID[LRIDs[i].second] = LRIDs[i].first;
 		arma::mat temp_mat;
 		temp_mat.zeros(LRDims.at(i).first, LRDims.at(i).second);
 		SubMat.push_back(temp_mat);
@@ -38,6 +60,7 @@ void DMRGCat::QMat::zero(const std::vector<std::pair<int, int>>& LRIDs, const st
 
 
 DMRGCat::QMat::QMat(const std::vector<std::pair<int, int>>& LRIDs, const std::vector<double>& coe){
+	IsFermion = DMRGCat::hasSign(LRIDs.at(0).first, LRIDs.at(0).second);
 	try{
 		if (LRIDs.size() != coe.size()){
 			throw std::runtime_error("Error in QMat LRIDs.size!=coe.size");
@@ -49,6 +72,7 @@ DMRGCat::QMat::QMat(const std::vector<std::pair<int, int>>& LRIDs, const std::ve
 	int submatno = 0;
 	LRID = LRIDs;
 	for (int i = 0; i < LRIDs.size(); i++){
+		R2LID[LRIDs[i].second] = LRIDs[i].first;
 		arma::mat temp_mat(1,1);
 		temp_mat = coe.at(i);
 		SubMat.push_back(temp_mat);
@@ -61,9 +85,11 @@ DMRGCat::QMat::QMat(const std::vector<std::pair<int, int>>& LRIDs, const std::ve
 
 
 DMRGCat::QMat::QMat(const std::vector<std::pair<int, int>>& LRIDs){
+	IsFermion = DMRGCat::hasSign(LRIDs.at(0).first, LRIDs.at(0).second);
 	LRID = LRIDs;
 	int submatno = 0;
 	for (int i = 0; i < LRIDs.size(); i++){
+		R2LID[LRIDs[i].second] = LRIDs[i].first;
 		arma::mat temp_mat;
 		temp_mat.eye(1, 1);
 		SubMat.push_back(temp_mat);
@@ -75,86 +101,57 @@ DMRGCat::QMat::QMat(const std::vector<std::pair<int, int>>& LRIDs){
 
 
 DMRGCat::QMat::QMat(const QMat& qmat1, const QMat& qmat2, const BlockQBase& bigBase){
-	int no = 0;
-#ifdef FERMION
-	int sign = DMRGCat::getFermionSign(qmat2.R2LID.begin()->second,qmat2.R2LID.begin()->first);
-	if (sign == 1){
-		for (const auto& x : qmat1.R2LID){
-			for (const auto& y : qmat2.R2LID){
-				int newRID = DMRGCat::getAddID(x.first, y.first);
-				int newLID = DMRGCat::getAddID(x.second, y.second);
-				arma::mat tempMat1;
-				if (DMRGCat::getFermionSign(y.second) == -1){
-					tempMat1 = -arma::kron(qmat1.SubMat.at(qmat1.RQID2MatNo(x.first)), qmat2.SubMat.at(qmat2.RQID2MatNo.at(y.first)));
-				}
-				else{
-					tempMat1 = arma::kron(qmat1.SubMat.at(qmat1.RQID2MatNo(x.first)), qmat2.SubMat.at(qmat2.RQID2MatNo.at(y.first)));
-				}
-				 
-				if (R2LID.find(newRID) == R2LID.end()){
-					LRID.push_back({newLID,newRID});
-					R2LID[newRID] = newRID;
-					arma::mat tempMat(bigBase.SubQIDDim.at(newLID), bigBase.SubQIDDim.at(newRID));
-					matCompress(tempMat, bigBase.StartDim.at(std::pair<int, int>(x.second, y.second)), tempMat1, bigBase.StartDim.at(std::pair<int, int>(x.first, y.first)));
-					SubMat.push_back(tempMat);
-					RQID2MatNo[newRID] = no;
-					LQID2MatNo[newLID] = no;
-					no++;
-				}
-				else{
-					matCompress(SubMat.at(RQID2MatNo.at(newRID)), bigBase.StartDim.at(std::pair<int, int>(x.second, y.second)), tempMat1, bigBase.StartDim.at(std::pair<int, int>(x.first, y.first)));
-				}
-			}
-		}
-	}
-#endif	
-#ifdef BOSON
-	for (const auto& x : qmat1.R2LID){
-		for (const auto& y : qmat2.R2LID){
-			int newRID = DMRGCat::getAddID(x.first,y.first);
-			int newLID = DMRGCat::getAddID(x.second,y.second);
-			arma::mat tempMat1 = arma::kron(qmat1.SubMat.at(qmat1.RQID2MatNo(x.first)), qmat2.SubMat.at(qmat2.RQID2MatNo.at(y.first)));
-			if (R2LID.find(newRID) == R2LID.end()){
-				LRID.push_back({newLID,newRID});
-				R2LID[newRID] = newRID;
-				arma::mat tempMat(bigBase.SubQIDDim.at(newLID), bigBase.SubQIDDim.at(newRID));		
-				matCompress(tempMat, bigBase.StartDim.at(std::pair<int,int>(x.second,y.second)), tempMat1, bigBase.StartDim.at(std::pair<int,int>(x.first,y.first)));
-				SubMat.push_back(tempMat);
-				RQID2MatNo[newRID] = no;
-				LQID2MatNo[newLID] = no;
-				no++;
-			}
-			else{
-				matCompress(SubMat.at(RQID2MatNo.at(newRID)), bigBase.StartDim.at(std::pair<int, int>(x.second, y.second)), tempMat1, bigBase.StartDim.at(std::pair<int, int>(x.first, y.first)));
-			}
-		}
-	}
-#endif
+	IsFermion = (qmat1.IsFermion || qmat2.IsFermion) && (!qmat1.IsFermion || !qmat2.IsFermion);
+	kron(qmat1, qmat2, bigBase);
 }
 
-//qmat1 ~ qmat2  ->  |qmat2.i, qmat1.i>
+//qmat1 x qmat2  ->  |qmat1.i, qmat2.i>
 void DMRGCat::QMat::kron(const QMat& qmat1, const QMat& qmat2, const BlockQBase& bigBase){
 	clear();
+	IsFermion = (qmat1.IsFermion || qmat2.IsFermion) && (!qmat1.IsFermion || !qmat2.IsFermion);
 	int no = 0;
 #ifdef FERMION
-	int sign = DMRGCat::getFermionSign(qmat2.R2LID.begin()->second, qmat2.R2LID.begin()->first);
-	if (sign == 1){
+	if (qmat2.getIsFermion()){
 		for (const auto& x : qmat1.R2LID){
 			for (const auto& y : qmat2.R2LID){
 				int newRID = DMRGCat::getAddID(x.first, y.first);
 				int newLID = DMRGCat::getAddID(x.second, y.second);
 				arma::mat tempMat1;
-				if (DMRGCat::getFermionSign(y.second) == -1){
-					tempMat1 = -arma::kron(qmat1.SubMat.at(qmat1.RQID2MatNo(x.first)), qmat2.SubMat.at(qmat2.RQID2MatNo.at(y.first)));
+				if (DMRGCat::getFermionSign(x.second) == -1){					
+					tempMat1 = -arma::kron(qmat1.SubMat.at(qmat1.RQID2MatNo.at(x.first)), qmat2.SubMat.at(qmat2.RQID2MatNo.at(y.first)));
 				}
 				else{
-					tempMat1 = arma::kron(qmat1.SubMat.at(qmat1.RQID2MatNo(x.first)), qmat2.SubMat.at(qmat2.RQID2MatNo.at(y.first)));
+					tempMat1 = arma::kron(qmat1.SubMat.at(qmat1.RQID2MatNo.at(x.first)), qmat2.SubMat.at(qmat2.RQID2MatNo.at(y.first)));
 				}
-
 				if (R2LID.find(newRID) == R2LID.end()){
 					LRID.push_back({ newLID, newRID });
-					R2LID[newRID] = newRID;
-					arma::mat tempMat(bigBase.SubQIDDim.at(newLID), bigBase.SubQIDDim.at(newRID));
+					R2LID[newRID] = newLID;
+					arma::mat tempMat;
+					tempMat.zeros(bigBase.SubQIDDim.at(newLID), bigBase.SubQIDDim.at(newRID));
+					matCompress(tempMat, bigBase.StartDim.at(std::pair<int, int>(x.second, y.second)), tempMat1, bigBase.StartDim.at(std::pair<int, int>(x.first, y.first)));
+					SubMat.push_back(tempMat);
+					RQID2MatNo[newRID] = no;
+					LQID2MatNo[newLID] = no;
+					no++;
+				}
+				else{
+					matCompress(SubMat.at(RQID2MatNo.at(newRID)), bigBase.StartDim.at(std::pair<int, int>(x.second, y.second)), tempMat1, bigBase.StartDim.at(std::pair<int, int>(x.first, y.first)));
+				}
+			}
+		}
+	}
+	else{
+		for (const auto& x : qmat1.R2LID){
+			for (const auto& y : qmat2.R2LID){
+				int newRID = DMRGCat::getAddID(x.first, y.first);
+				int newLID = DMRGCat::getAddID(x.second, y.second);
+				arma::mat tempMat1 = arma::kron(qmat1.SubMat.at(qmat1.RQID2MatNo.at(x.first)), qmat2.SubMat.at(qmat2.RQID2MatNo.at(y.first)));
+				
+				if (R2LID.find(newRID) == R2LID.end()){
+					LRID.push_back({ newLID, newRID });
+					R2LID[newRID] = newLID;
+					arma::mat tempMat;
+					tempMat.zeros(bigBase.SubQIDDim.at(newLID), bigBase.SubQIDDim.at(newRID));
 					matCompress(tempMat, bigBase.StartDim.at(std::pair<int, int>(x.second, y.second)), tempMat1, bigBase.StartDim.at(std::pair<int, int>(x.first, y.first)));
 					SubMat.push_back(tempMat);
 					RQID2MatNo[newRID] = no;
@@ -168,28 +165,6 @@ void DMRGCat::QMat::kron(const QMat& qmat1, const QMat& qmat2, const BlockQBase&
 		}
 	}
 #endif	
-#ifdef BOSON
-	for (const auto& x : qmat1.R2LID){
-		for (const auto& y : qmat2.R2LID){
-			int newRID = DMRGCat::getAddID(x.first, y.first);
-			int newLID = DMRGCat::getAddID(x.second, y.second);
-			arma::mat tempMat1 = arma::kron(qmat1.SubMat.at(qmat1.RQID2MatNo(x.first)), qmat2.SubMat.at(qmat2.RQID2MatNo.at(y.first)));
-			if (R2LID.find(newRID) == R2LID.end()){
-				LRID.push_back({newLID,newRID});
-				R2LID[newRID] = newRID;
-				arma::mat tempMat(bigBase.SubQIDDim.at(newLID), bigBase.SubQIDDim.at(newRID));
-				matCompress(tempMat, bigBase.StartDim.at(std::pair<int, int>(x.second, y.second)), tempMat1, bigBase.StartDim.at(std::pair<int, int>(x.first, y.first)));
-				SubMat.push_back(tempMat);
-				RQID2MatNo[newRID] = no;
-				LQID2MatNo[newLID] = no;
-				no++;
-			}
-			else{
-				matCompress(SubMat.at(RQID2MatNo.at(newRID)), bigBase.StartDim.at(std::pair<int, int>(x.second, y.second)), tempMat1, bigBase.StartDim.at(std::pair<int, int>(x.first, y.first)));
-			}
-		}
-	}
-#endif
 }
 
 
@@ -206,14 +181,16 @@ void DMRGCat::QMat::matCompress(arma::mat& newMat, int dimL, const arma::mat& ol
 std::ostream& DMRGCat::operator<<(std::ostream& output, const DMRGCat::QMat& QMatvar){
 	output << "----------------------------------" << std::endl;
 	output << "NumOfBlock:\t" << QMatvar.SubMat.size() << std::endl;
-
+	std::cout << "size = " << QMatvar.R2LID.size() << "\n";
 	for (const auto& x : QMatvar.R2LID){
-		output << "Q1:" << DMRGCat::U1Q(x.second) << "Q2:" << DMRGCat::U1Q(x.second);
+		output << "Q1:" << DMRGCat::U1Q(x.second) << "Q2:" << DMRGCat::U1Q(x.first);
 		int no = QMatvar.RQID2MatNo.at(x.first);
+		std::cout << "no = " << no << "\n";
 		output << "Matrix: " << QMatvar.SubMat.at(no).n_rows << " x " << QMatvar.SubMat.at(no).n_cols << std::endl;
 
-		//if (QMatvar.SubMat.at(no).n_rows <= 9 && QMatvar.SubMat.at(no).n_cols <= 9)
-		//output << QMatvar.SubMat.at(no);
+		if (QMatvar.SubMat.at(no).n_rows <= 9 && QMatvar.SubMat.at(no).n_cols <= 9){
+			output << QMatvar.SubMat.at(no) << "\n";
+		}
 	}
 
 	output << std::endl << std::endl;
@@ -224,13 +201,15 @@ std::ostream& DMRGCat::operator<<(std::ostream& output, const DMRGCat::QMat& QMa
 
 
 void DMRGCat::QMat::eyeQMat(const DMRGCat::BlockQBase& base){
+	IsFermion = false;
 	clear();
 	int submatno = 0;
 	for (const auto& x : base.SubQIDDim){
 		LRID.push_back({ x.first, x.first });
-		arma::mat temp_mat;
-		temp_mat.eye(x.second, x.second);
+		R2LID[x.first] = x.first;
+		arma::mat temp_mat;		
 		SubMat.push_back(temp_mat);
+		SubMat.at(submatno).eye(x.second, x.second);
 		RQID2MatNo[x.first] = submatno;
 		LQID2MatNo[x.first] = submatno;
 		submatno++;
@@ -241,6 +220,7 @@ void DMRGCat::QMat::eyeQMat(const DMRGCat::BlockQBase& base){
 
 
 void DMRGCat::QMat::clear(){
+	LRID.clear();
 	R2LID.clear();
 	RQID2MatNo.clear();
 	LQID2MatNo.clear();
@@ -248,9 +228,9 @@ void DMRGCat::QMat::clear(){
 }
 
 void DMRGCat::QMat::save(std::ofstream& savefile) const{
-	size_t NumOfBlock = SubMat.size();
+	unsigned int NumOfBlock = SubMat.size();
 	savefile.write((const char*)&NumOfBlock, sizeof(int));
-	for (const auto& x : R2LID){
+	for (const auto& x : LRID){
 		savefile.write((const char*)&x.first, sizeof(int));
 		savefile.write((const char*)&x.second, sizeof(int));
 	}
@@ -276,17 +256,17 @@ void DMRGCat::QMat::save(std::ofstream& savefile) const{
 void DMRGCat::QMat::load(std::ifstream& loadfile){
 	clear();
 	int NumOfBlock;
-	loadfile.read((char*)&NumOfBlock, sizeof(int));
-	
+	loadfile.read((char*)&NumOfBlock, sizeof(int));	
 	
 	int x,y;
-	arma::mat matrix;
 	for (int i = 0; i < NumOfBlock; i++){
 		loadfile.read((char*)&(x), sizeof(int));
 		loadfile.read((char*)&(y), sizeof(int));
-		R2LID[x] = y;
-		LRID.push_back({ y, x });
+		R2LID[y] = x;
+		LRID.push_back({ x, y });
 	}
+
+	IsFermion = DMRGCat::hasSign(LRID.at(0).first, LRID.at(0).second);
 
 	for (int i = 0; i < NumOfBlock; i++){
 		loadfile.read((char*)&(x), sizeof(int));
@@ -295,15 +275,12 @@ void DMRGCat::QMat::load(std::ifstream& loadfile){
 		LQID2MatNo[R2LID.at(x)] = y;
 	}
 
-	for (int i = 0; i < NumOfBlock; i++){
-		loadfile.read((char*)&(x), sizeof(int));
-		loadfile.read((char*)&(y), sizeof(int));
-		R2LID[x] = y;
-	}
-		
+	
+	arma::mat matrix;
+	SubMat = std::vector<arma::mat>(NumOfBlock,matrix);
 	for (int i = 0; i < NumOfBlock; i++){
 		try{
-			bool loadok = matrix.load(loadfile, arma::arma_binary);
+			bool loadok = SubMat.at(i).load(loadfile, arma::arma_binary);
 			if (!loadok){
 				throw std::runtime_error("Error in QMat::load");
 			}
@@ -312,6 +289,7 @@ void DMRGCat::QMat::load(std::ifstream& loadfile){
 			std::cerr << e.what() << std::endl;
 		}
 	}
+	
 }
 
 
@@ -332,7 +310,7 @@ void DMRGCat::QMat::trunc(const BlockQBase& UBase, const QMat& truncU){
 
 	int subno = 0;
 	for (const auto&x : saveLRID){
-		if (truncLRID.find(x) != truncLRID.end()){
+		if (truncLRID.find(x) == truncLRID.end()){
 			int no = saveR2No.at(x.second);
 			SubMat.push_back(saveMat.at(no));
 			RQID2MatNo[x.second] = subno;
@@ -343,8 +321,9 @@ void DMRGCat::QMat::trunc(const BlockQBase& UBase, const QMat& truncU){
 		}
 	}
 
-	int no;
-	int rno, lno;
+	int no = 0;
+	int rno = 0;
+	int lno = 0;
 	for (const auto&x : RQID2MatNo){
 		no = x.second;
 		lno = truncU.RQID2MatNo.at(R2LID.at(x.first));
@@ -356,29 +335,29 @@ void DMRGCat::QMat::trunc(const BlockQBase& UBase, const QMat& truncU){
 
 void DMRGCat::QMat::trans(const QMat& m){
 	clear();
+#ifdef FERMION
+	IsFermion = m.IsFermion;
+#endif
 	int size = m.LRID.size();
 	for (int i = 0; i < size; i++){
 		LRID.push_back({m.LRID.at(i).second, m.LRID.at(i).first});
 		R2LID[m.LRID.at(i).first] = m.LRID.at(i).second;
+		SubMat.push_back(m.SubMat.at(i));
 	}
 	LQID2MatNo = m.RQID2MatNo;
 	RQID2MatNo = m.LQID2MatNo;
-	SubMat = m.SubMat;
-#ifdef FERMION
-	IsFermion = m.IsFermion;
-#endif
-
 }
 
 void DMRGCat::QMat::trans(){
 	std::unordered_map<int, int> r2l;
 	std::vector<std::pair<int, int>> lr;
 	int size = LRID.size();
-	
 	for (int i = 0; i < size; i++){
 		lr.push_back({ LRID.at(i).second, LRID.at(i).first });
 		r2l[LRID.at(i).first] = LRID.at(i).second;
+		SubMat.at(i) = SubMat.at(i).t();
 	}
+
 	LRID = lr;
 	R2LID = r2l;
 	auto x = LQID2MatNo;
@@ -389,26 +368,22 @@ void DMRGCat::QMat::trans(){
 
 
 void DMRGCat::QMat::add(const QMat& added, const BlockQBase& space){
-	std::vector<int> raddedRID;
 	for (const auto& x : space.SubQIDDim){
 		auto findx1 = RQID2MatNo.find(x.first);
 		auto findx2 = added.RQID2MatNo.find(x.first);
 		if (findx1 != RQID2MatNo.end() && findx2!=added.RQID2MatNo.end()){
 			SubMat.at(findx1->second) += added.SubMat.at(findx2->second);
 		}
+
 		else if (findx1 == RQID2MatNo.end() && findx2 != added.RQID2MatNo.end()){
-			raddedRID.push_back(x.first);
+			int lqid = added.R2LID.at(x.first);
+			LRID.push_back({ lqid, x.first });
+			R2LID[x.first] = lqid;
+			SubMat.push_back(added.SubMat.at(added.RQID2MatNo.at(x.first)));
+			RQID2MatNo[x.first] = SubMat.size() - 1;
+			LQID2MatNo[lqid] = SubMat.size() - 1;
 		}
 		else{ ; }
-	}
-
-	for (const auto& x : raddedRID){
-		int lid = added.R2LID.at(x);
-		LRID.push_back({lid,x});
-		R2LID[x] = lid;
-		SubMat.push_back(added.SubMat.at(added.RQID2MatNo(x)));
-		RQID2MatNo[x] = SubMat.size();
-		LQID2MatNo[x] = SubMat.size();
 	}
 }
 
@@ -422,17 +397,17 @@ bool DMRGCat::QMat::getIsFermion()const{
 
 void DMRGCat::QMat::time(double lamda){
 	for (auto& x : SubMat){
-		x = x * lamda;
+		x *= lamda;
 	}
 }
+
+
+
 
 
 //-----------------------------------------------------------------------------------
 //------------------------------QMat operations--------------------------------------
 //-----------------------------------------------------------------------------------
-
-
-
 
 void DMRGCat::time(const double& lamda, const QMat& in, QMat& out){
 	int matNo = in.SubMat.size();
@@ -591,18 +566,7 @@ int DMRGCat::QMat::QMat2v(double* f) const{
 
 
 void DMRGCat::QMat::print()const{
-	std::cout << std::endl << std::endl;
-	int size = LRID.size();
-	for (int i = 0; i < size; i++){
-		std::cout << "*****************************************\n";
-		std::cout << U1Q(LRID.at(i).first) << U1Q(LRID.at(i).second) << "\n";
-		unsigned int row = { SubMat.at(i).n_rows };
-		unsigned int col = { SubMat.at(i).n_cols };
-		std::cout << " " << row << " * " << col << "\n";
-		SubMat.at(i).print("SubMat:");
-		std::cout << std::endl;
-	}
-	std::cout << std::endl << std::endl;
+	std::cout << *this;
 }
 
 

@@ -2,7 +2,11 @@
 #include "Block.h"
 #include "setting.h"
 
+
+DMRGCat::Block::Block(){}
 DMRGCat::Block::~Block(){}
+
+
 //Single site block;
 DMRGCat::Block::Block(const Parameter& para){
 	QSpace.genSiteQBase();
@@ -26,11 +30,9 @@ DMRGCat::Block::Block(const Parameter& para){
 
 
 	//CupDag
-	std::vector<std::pair<int, int>> idvec2;
-	idvec2.push_back({ id10, id00 });
-	idvec2.push_back({ id11, id01 });
-	QMat cupd(idvec2);
+	QMat cupd;
 	QOperator.push_back(cupd);
+	QOperator.back().trans(cup);
 
 
 
@@ -44,12 +46,9 @@ DMRGCat::Block::Block(const Parameter& para){
 
 
 	//CdownDag
-	idvec.clear();
-	idvec.push_back({ id01, id00 });
-	idvec.push_back({ id11, id10 });
-	std::vector<double> coe2 = { 1, -1 };
-	QMat cdown2(idvec, coe2);
+	QMat cdown2;
 	QOperator.push_back(cdown2);
+	QOperator.back().trans(cdown);
 
 
 	//Nup
@@ -78,54 +77,63 @@ DMRGCat::Block::Block(const Parameter& para){
 #endif
 }
 
+DMRGCat::Block::Block(const Block& var){
+	QSpace = var.QSpace;
+	QOperator = var.QOperator;
+}
 
+
+void DMRGCat::Block::operator=(const Block& var){
+	QSpace = var.QSpace;
+	QOperator = var.QOperator;
+}
 
 DMRGCat::Block::Block(const Parameter& para, const Block& old){
 	Block added(para);
-	QSpace.kron(old.QSpace,added.QSpace);
+	QSpace.kron(added.QSpace, old.QSpace);
 
 	QMat temp;
 	QOperator = std::vector<QMat>(8,temp);
 
 	//eye
-	QOperator.at(Eye).kron(old.QOperator.at(Eye), added.QOperator.at(Eye), QSpace);
+	QOperator.at(Eye).kron(added.QOperator.at(Eye), old.QOperator.at(Eye), QSpace);
 
 	//Up
-	QOperator.at(Cup).kron(old.QOperator.at(Eye), added.QOperator.at(Cup), QSpace);
-
+	QOperator.at(Cup).kron(added.QOperator.at(Cup), old.QOperator.at(Eye), QSpace);
 	QOperator.at(CupDag).trans(QOperator.at(Cup));
 
 	//Down
-	QOperator.at(Cdown).kron(old.QOperator.at(Eye), added.QOperator.at(Cdown), QSpace);
-
+	QOperator.at(Cdown).kron(added.QOperator.at(Cdown), old.QOperator.at(Eye), QSpace);
 	QOperator.at(CdownDag).trans(QOperator.at(Cdown));
 	
 	//Nup
-	QOperator.at(Nup).kron(old.QOperator.at(Eye), added.QOperator.at(Nup), QSpace);
+	QOperator.at(Nup).kron(added.QOperator.at(Nup), old.QOperator.at(Eye), QSpace);
 
 	//Ndown
-	QOperator.at(Ndown).kron(old.QOperator.at(Eye), added.QOperator.at(Ndown), QSpace);
+	QOperator.at(Ndown).kron(added.QOperator.at(Ndown), old.QOperator.at(Eye), QSpace);
+	
 
 	//Hamiltonian;
-	QOperator.at(SiteH).kron(old.QOperator.at(SiteH), added.QOperator.at(Eye), QSpace);
+	QOperator.at(SiteH).kron(added.QOperator.at(Eye), old.QOperator.at(SiteH), QSpace);
+	
+	
 	DMRGCat::QMat tempO;	
-	tempO.kron(old.QOperator.at(Eye), added.QOperator.at(SiteH), QSpace);
+	tempO.kron(added.QOperator.at(SiteH), old.QOperator.at(Eye), QSpace);
 	QOperator.at(SiteH).add(tempO,QSpace);
 
-	tempO.kron(old.QOperator.at(CupDag), added.QOperator.at(Cup), QSpace);
+	
+	tempO.kron(added.QOperator.at(CupDag), old.QOperator.at(Cup), QSpace);
 	tempO.time(para.getT());
 	QOperator.at(SiteH).add(tempO,QSpace);
+
 	tempO.trans();
 	QOperator.at(SiteH).add(tempO,QSpace);
 
-	tempO.kron(old.QOperator.at(CdownDag), added.QOperator.at(Cdown), QSpace);
+
+	tempO.kron(added.QOperator.at(CdownDag), old.QOperator.at(Cdown), QSpace);
 	tempO.time(para.getT());
 	QOperator.at(SiteH).add(tempO, QSpace);
 	tempO.trans();
-	QOperator.at(SiteH).add(tempO, QSpace);
-
-	tempO.kron(old.QOperator.at(Nup), added.QOperator.at(Ndown), QSpace);
-	tempO.time(para.getU());
 	QOperator.at(SiteH).add(tempO, QSpace);
 }
 
@@ -139,10 +147,17 @@ void DMRGCat::Block::trunc(const BlockQBase& UBase, const QMat& truncU){
 
 
 
-void DMRGCat::Block::print()const{
+void DMRGCat::Block::clear(){
+	QSpace.clear();
+	QOperator.clear();
+}
+
+void DMRGCat::Block::print()const{	
+	
 	for (int i = 0; i < QOperator.size(); i++){
 		std::cout << "QONo = " << i << std::endl;
 		QOperator.at(i).print();
+		system("pause");
 	}
 }
 
@@ -150,4 +165,29 @@ void DMRGCat::Block::print()const{
 void DMRGCat::Block::print(std::string s)const{
 	std::cout << s << "\n";
 	print();
+}
+
+
+
+void DMRGCat::Block::save(std::ofstream& savefile)const{
+	QSpace.save(savefile);
+	unsigned int NumOfBlock = QOperator.size();
+	savefile.write((const char*)&NumOfBlock, sizeof(int));
+
+	for (const auto& x : QOperator){
+		x.save(savefile);
+	}
+}
+
+
+void DMRGCat::Block::load(std::ifstream& loadfile){
+	clear();
+	QSpace.load(loadfile);
+	unsigned int size = 0;
+	loadfile.read((char*)&size, sizeof(int));
+	QMat tempVar;
+	QOperator = std::vector<QMat>(size, tempVar);
+	for (int i = 0; i < size; i++){
+		QOperator.at(i).load(loadfile);
+	}
 }

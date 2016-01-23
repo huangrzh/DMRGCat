@@ -14,17 +14,23 @@ namespace DMRGCat{
 class Block{
 	
 public:
+	Block();
 	Block(const Parameter& para);
+	Block(const Block& var);
 	~Block();
 	Block(const Parameter& para, const Block& old);
 
-
+	void operator=(const Block& var);
 	void trunc(const BlockQBase& UBase, const QMat& truncU);
 	void clear();
 
 
 	void save(std::ofstream& savefile)const;
 	void load(std::ifstream& loadfile);
+	void print()const;
+	void print(std::string)const;
+
+
 	friend std::ostream& operator<<(std::ostream&, const Block&);
 	friend class QWave;
 	friend class SuperBlock;

@@ -3,6 +3,7 @@
 
 #include <iostream>
 //#include <unordered_map>
+#include <string>
 #include <map>
 
 namespace DMRGCat{
@@ -11,15 +12,18 @@ class BlockQBase{
 public:
 	~BlockQBase();
 	BlockQBase();
+	BlockQBase(const BlockQBase& var);
 	void genSiteQBase();
 	BlockQBase(const BlockQBase &b1, const BlockQBase &b2);
 	void kron(const BlockQBase &b1, const BlockQBase &b2);
 
-
-
+	void operator=(const BlockQBase& var);
+	void print()const;
+	void print(std::string s)const;
 	void save(std::ofstream& savefile)const;
 	void load(std::ifstream& loadfile);
-	
+	void clear();
+
 	void truncate(const BlockQBase &ubase);
 	friend std::ostream& operator<<(std::ostream& os, const BlockQBase& base);
 	friend void getKronOrder(const BlockQBase &b1, const BlockQBase &b2, std::map<std::pair<int, int>, int>& startDim);
