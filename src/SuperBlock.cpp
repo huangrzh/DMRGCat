@@ -3,15 +3,16 @@
 
 
 DMRGCat::SuperBlock::SuperBlock(Parameter& para, Block& sys, Block& m, Block& n, Block& env){
-	TotQNo = para.getParticleNo();
+	std::vector<int> qno = {para.getL()/2,para.getL()/2};
+	TotQNoID = DMRGCat::getID(qno); ;
 	PToS = &sys;
 	PToM = &m;
 	PToN = &n;
 	PToE = &env;
 	Para = &para;
 
-	Dim = GsWave.setWave(TotQNo,sys,m,n,env);	
-	GsWave0.setWave(TotQNo, sys, m, n, env);
+	Dim = GsWave.setWave(TotQNoID,sys,m,n,env);	
+	GsWave0.setWave(TotQNoID, sys, m, n, env);
 
 	calGroundState();
 }
@@ -62,14 +63,14 @@ void DMRGCat::SuperBlock::calGroundState(){
 	bool breakfor = false;
 	for (int j = 0; j < 400; j++){
 		if (iter == 0){
-			f1tof2(con.f0, con.f1);// f1 = H f0
+			f1tof2(con.f0.memptr(), con.f1.memptr());// f1 = H f0
 		}
 		breakfor = con.abc_2(iter);
 		if (breakfor){
 			break;
 		}	
 
-		f1tof2(con.f2, con.f3); // f3 = H f2
+		f1tof2(con.f2.memptr(), con.f3.memptr()); // f3 = H f2
 		con.abc_4();
 		iter++;
 
@@ -80,5 +81,5 @@ void DMRGCat::SuperBlock::calGroundState(){
 
 	double GsEnergy = con.eng;
 	con.NormTo1(con.f0);
-	GsWave.v2QWave(con.f0);// change sup.Wave = GSWave <- f0
+	GsWave.v2QWave(con.f0.memptr());// change sup.Wave = GSWave <- f0
 }

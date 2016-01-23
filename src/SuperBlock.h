@@ -17,7 +17,7 @@ class SuperBlock{
 		
 	private:
 		QWave GsWave, GsWave0;
-		int TotQNo;
+		int TotQNoID;
 		int Dim;
 		Block *PToS;
 		Block *PToM;

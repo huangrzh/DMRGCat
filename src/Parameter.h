@@ -16,12 +16,12 @@ class Parameter{
 		void load(std::ifstream& loadfile);
 		friend std::ostream& operator<<(std::ostream& s, const Parameter& para);
 
+		int getL()const;
 #ifdef FERMION_HUBBARD
 		double getU()const;
 		double getT()const;
 		int getD()const;
 		int getSweepNo()const;
-		int getParticleNo()const;
 #endif
 	private:
 
@@ -29,7 +29,6 @@ class Parameter{
 		int ChainL;
 		double T;
 		double U;
-		int ParticleNo;	   //Particle number of the whold system	
 		int SavedD;
 		int SweepNo; 		// no need to store;
 #endif

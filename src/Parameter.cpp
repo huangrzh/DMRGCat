@@ -22,13 +22,6 @@ void DMRGCat::Parameter::load(std::ifstream& s){
 	while (x != '=') s >> x;
 	s >> U;
 
-
-	x = 'q';
-	while (x != '=') s >> x;
-	s >> ParticleNo;
-
-
-
 	x = 'q';
 	while (x != '=') s >> x;
 	s >> SavedD;
@@ -53,8 +46,6 @@ std::ostream& DMRGCat::operator<<(std::ostream& s, const DMRGCat::Parameter& par
 
 		<< "SavedD = " << para.SavedD << std::endl
 
-		<< "ParticleNo = " << para.ParticleNo << std::endl
-
 		<< "MaxSweepNo = " << para.SweepNo << std::endl << std::endl;
 #endif
 	      
@@ -62,6 +53,9 @@ std::ostream& DMRGCat::operator<<(std::ostream& s, const DMRGCat::Parameter& par
 }
 
 
+int DMRGCat::Parameter::getL()const{
+	return ChainL;
+}
 
 double DMRGCat::Parameter::getU()const{
 	return U;
@@ -75,10 +69,6 @@ int DMRGCat::Parameter::getD()const{
 int DMRGCat::Parameter::getSweepNo()const{
 	return SweepNo;
 }
-int DMRGCat::Parameter::getParticleNo()const{
-	return ParticleNo;
-}
-
 
 
 void DMRGCat::Parameter::print(){

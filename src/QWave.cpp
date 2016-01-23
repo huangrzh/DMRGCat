@@ -696,3 +696,19 @@ void DMRGCat::QWave::QWave2v(double* f) const
 		std::cerr << e.what() << std::endl;
 	}
 }
+
+
+void DMRGCat::QWave::print()const{
+	std::cout << "TotalQ: " << U1Q(TotQID) << ", Dim: " << Dim << "\n";
+	for (const auto& x : MNQID2SysEnvNo){
+		std::cout << U1Q(x.first.first) << "  " << U1Q(x.first.second) << "\n";
+		SysEnvQMat.at(x.second).print();
+	}
+	std::cout << "\n\n";
+}
+
+
+void DMRGCat::QWave::print(std::string s)const{
+	std::cout << s << "\n";
+	print();
+}

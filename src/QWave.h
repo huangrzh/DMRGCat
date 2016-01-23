@@ -24,6 +24,9 @@ class QWave{
 		void v2QWave(const double* f);
 		void QWave2v(double* f)const;
 
+		void print()const;
+		void print(std::string s)const;
+
 		friend class SuperBlock;
 	private:
 		int Dim;
