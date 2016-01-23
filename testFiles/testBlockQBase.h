@@ -1,10 +1,15 @@
-#include "../BlockQBase.h"
+#include "../src/BlockQBase.h"
+
 
 void testBlockQBase(){
+
 	DMRGCat::BlockQBase block;
-	std::cout << "=======================\n";
-	std::cout << "test kron\n";
+	block.genSiteQBase();
+	block.print("single site base");
+
+
 	DMRGCat::BlockQBase blocks(block);
 	DMRGCat::BlockQBase newsys(blocks,block);
-	std::cout << newsys << std::endl;
+	newsys.print("kron base");
+	system("pause");
 }
