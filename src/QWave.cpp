@@ -71,7 +71,6 @@ void DMRGCat::QWave::oneBody(int flag, const QMat& O, QWave& out)const{
 			for (const auto& x : MNQID2SysEnvNo){
 				auto xx = O.RQID2MatNo.find(x.first.first);
 				if (xx != O.RQID2MatNo.end()){
-					int realMNi = O.R2LID.at(xx->second);
 					DMRGCat::time(O.SubMat.at(xx->second)(0,0), SysEnvQMat.at(x.second), out.SysEnvQMat.at(x.second));
 				}				
 			}
@@ -83,7 +82,6 @@ void DMRGCat::QWave::oneBody(int flag, const QMat& O, QWave& out)const{
 			for (const auto& x : MNQID2SysEnvNo){
 				auto xx = O.RQID2MatNo.find(x.first.second);
 				if (xx != O.RQID2MatNo.end()){
-					int realMNi = O.R2LID.at(xx->second);
 					DMRGCat::time(O.SubMat.at(xx->second)(0, 0), SysEnvQMat.at(x.second), out.SysEnvQMat.at(x.second));
 				}
 			}
@@ -177,7 +175,7 @@ void DMRGCat::QWave::twoBody(int flagl, const QMat& Ol, int flagr, const QMat& O
 
 void DMRGCat::QWave::twoBody(int flagl, const QMat& Ol, int flagr, const QMat& Or, const double& lamda, QWave& out)const{
 	int flag = flagl * 10 + flagr;
-
+	std::cout << "flag = " << flag << "\n";
 	switch (flag){
 	case 12:{SysMAct(lamda, Ol, Or, out); break; }
 	case 13:{SysNAct(lamda, Ol, Or, out); break; }
@@ -196,11 +194,11 @@ void DMRGCat::QWave::SysMAct(double lamda, const QMat& Ol, const QMat& Or, QWave
 		for (const auto& x : MNQID2SysEnvNo){
 			auto xm = Or.RQID2MatNo.find(x.first.first);
 			if (xm != Or.RQID2MatNo.end()){
-				auto newno = out.MNQID2SysEnvNo.find({ Ol.R2LID.at(x.first.first), x.first.second });
+				auto newno = out.MNQID2SysEnvNo.find({ Or.R2LID.at(x.first.first), x.first.second });
 				if (newno != out.MNQID2SysEnvNo.end()){
 					double coe = lamda * Or.SubMat.at(Or.RQID2MatNo.at(x.first.first))(0, 0);
 					coe *= -(double)DMRGCat::getFermionSign(x.first.first);
-					DMRGCat::leftTime(coe, Ol, SysEnvQMat.at(x.second), out.SysEnvQMat.at(x.second));
+					DMRGCat::leftTime(coe, Ol, SysEnvQMat.at(x.second), out.SysEnvQMat.at(newno->second));
 				}
 			}
 		}
@@ -209,8 +207,11 @@ void DMRGCat::QWave::SysMAct(double lamda, const QMat& Ol, const QMat& Or, QWave
 		for (const auto& x : MNQID2SysEnvNo){
 			auto xm = Or.RQID2MatNo.find(x.first.first);
 			if (xm != Or.RQID2MatNo.end()){
-				double coe = lamda * Or.SubMat.at(Or.RQID2MatNo.at(x.first.first))(0, 0);
-				DMRGCat::leftTime(coe, Ol, SysEnvQMat.at(x.second), out.SysEnvQMat.at(x.second));
+				auto newno = out.MNQID2SysEnvNo.find({ Or.R2LID.at(x.first.first), x.first.second });
+				if (newno != out.MNQID2SysEnvNo.end()){
+					double coe = lamda * Or.SubMat.at(Or.RQID2MatNo.at(x.first.first))(0, 0);
+					DMRGCat::leftTime(coe, Ol, SysEnvQMat.at(x.second), out.SysEnvQMat.at(newno->second));
+				}
 			}
 		}
 	}
@@ -232,10 +233,13 @@ void DMRGCat::QWave::SysNAct(double lamda, const QMat& Ol, const QMat& Or, QWave
 	}
 	else{
 		for (const auto& x : MNQID2SysEnvNo){
-			auto xm = Or.RQID2MatNo.find(x.first.first);
-			if (xm != Or.RQID2MatNo.end()){
-				double coe = lamda * Or.SubMat.at(Or.RQID2MatNo.at(x.first.first))(0, 0);
-				DMRGCat::leftTime(coe, Ol, SysEnvQMat.at(x.second), out.SysEnvQMat.at(x.second));
+			auto xn = Or.RQID2MatNo.find(x.first.second);
+			if (xn != Or.RQID2MatNo.end()){
+				auto newno = out.MNQID2SysEnvNo.find({ x.first.first, Or.R2LID.at(xn->first) });
+				if (newno != out.MNQID2SysEnvNo.end()){
+					double coe = lamda * Or.SubMat.at(Or.RQID2MatNo.at(x.first.first))(0, 0);
+					DMRGCat::leftTime(coe, Ol, SysEnvQMat.at(x.second), out.SysEnvQMat.at(newno->second));
+				}
 			}
 		}
 	}
@@ -261,30 +265,32 @@ void DMRGCat::QWave::SysEnvAct(double lamda, const QMat& Ol, const QMat& Or, QWa
 
 
 void DMRGCat::QWave::MNAct(double lamda, const QMat& Ol, const QMat& Or, QWave& out)const{
-	if (Ol.getIsFermion()){
+	if (Or.getIsFermion()){
 		for (const auto& x : MNQID2SysEnvNo){
-			auto xn = Or.RQID2MatNo.find(x.first.second);
 			auto xm = Ol.RQID2MatNo.find(x.first.first);
-			
+			auto xn = Or.RQID2MatNo.find(x.first.second);
 			if (xm != Ol.RQID2MatNo.end() && xn != Or.RQID2MatNo.end()){
 				auto newno = out.MNQID2SysEnvNo.find({ Ol.R2LID.at(x.first.first), Or.R2LID.at(x.first.second)});
 				if (newno != out.MNQID2SysEnvNo.end()){
-					double coe = lamda * Or.SubMat.at(Or.RQID2MatNo.at(x.first.second))(0, 0);
-					coe *= Ol.SubMat.at(Ol.RQID2MatNo.at(x.first.first))(0, 0);
+					double coe = lamda * Ol.SubMat.at(Ol.RQID2MatNo.at(x.first.first))(0, 0); 
+					coe *= Or.SubMat.at(Or.RQID2MatNo.at(x.first.second))(0, 0);
 					coe *= (double)DMRGCat::getFermionSign(x.first.first);
-					DMRGCat::timeLSign(coe, SysEnvQMat.at(x.second), out.SysEnvQMat.at(x.second));
+					DMRGCat::timeLSign(coe, SysEnvQMat.at(x.second), out.SysEnvQMat.at(newno->second));
 				}
 			}
 		}
 	}
 	else{
 		for (const auto& x : MNQID2SysEnvNo){
-			auto xn = Or.RQID2MatNo.find(x.first.second);
 			auto xm = Ol.RQID2MatNo.find(x.first.first);
-			if (xm != Ol.RQID2MatNo.end() && xn!=Or.RQID2MatNo.end()){
-				double coe = lamda * Or.SubMat.at(Or.RQID2MatNo.at(x.first.second))(0, 0);
-				coe *= Ol.SubMat.at(Ol.RQID2MatNo.at(x.first.first))(0, 0);
-				DMRGCat::time(coe,  SysEnvQMat.at(x.second), out.SysEnvQMat.at(x.second));
+			auto xn = Or.RQID2MatNo.find(x.first.second);
+			if (xm != Ol.RQID2MatNo.end() && xn != Or.RQID2MatNo.end()){
+				auto newno = out.MNQID2SysEnvNo.find({ Ol.R2LID.at(x.first.first), Or.R2LID.at(x.first.second) });
+				if (newno != out.MNQID2SysEnvNo.end()){
+					double coe = lamda * Ol.SubMat.at(Ol.RQID2MatNo.at(x.first.first))(0, 0);
+					coe *= Or.SubMat.at(Or.RQID2MatNo.at(x.first.second))(0, 0);
+					DMRGCat::time(coe, SysEnvQMat.at(x.second), out.SysEnvQMat.at(newno->second));
+				}
 			}
 		}
 	}
@@ -311,8 +317,11 @@ void DMRGCat::QWave::MEnvAct(double lamda, const QMat& Ol, const QMat& Or, QWave
 		for (const auto& x : MNQID2SysEnvNo){
 			auto xm = Ol.RQID2MatNo.find(x.first.first);
 			if (xm != Ol.RQID2MatNo.end()){
-				double coe = lamda * Ol.SubMat.at(Ol.RQID2MatNo.at(x.first.first))(0, 0);
-				DMRGCat::rightTime(coe, Or, SysEnvQMat.at(x.second), out.SysEnvQMat.at(x.second));
+				auto newno = out.MNQID2SysEnvNo.find({ Ol.R2LID.at(x.first.first), x.first.second });
+				if (newno != out.MNQID2SysEnvNo.end()){
+					double coe = lamda * Ol.SubMat.at(Ol.RQID2MatNo.at(x.first.first))(0, 0);
+					DMRGCat::rightTime(coe, Or, SysEnvQMat.at(x.second), out.SysEnvQMat.at(newno->second));
+				}
 			}
 		}
 	}
@@ -337,8 +346,11 @@ void DMRGCat::QWave::NEnvAct(double lamda, const QMat& Ol, const QMat& Or, QWave
 		for (const auto& x : MNQID2SysEnvNo){
 			auto xn = Ol.RQID2MatNo.find(x.first.second);
 			if (xn != Ol.RQID2MatNo.end()){
-				double coe = lamda * Ol.SubMat.at(Ol.RQID2MatNo.at(x.first.second))(0, 0);
-				DMRGCat::rightTime(coe, Or, SysEnvQMat.at(x.second), out.SysEnvQMat.at(x.second));
+				auto newno = out.MNQID2SysEnvNo.find({ x.first.first, Ol.R2LID.at(x.first.second) });
+				if (newno != out.MNQID2SysEnvNo.end()){
+					double coe = lamda * Ol.SubMat.at(xn->second)(0, 0);
+					DMRGCat::rightTime(coe, Or, SysEnvQMat.at(x.second), out.SysEnvQMat.at(newno->second));
+				}
 			}
 		}
 	}
