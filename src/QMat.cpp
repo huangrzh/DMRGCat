@@ -542,7 +542,11 @@ void DMRGCat::lrTimeLSign(const double& lamda, const QMat& leftO, const QMat& ri
 //-----------------------------------------------------------------------------------------
 
 
-
+void DMRGCat::QMat::zeros(){
+	for (auto& x : SubMat){
+		x.zeros();
+	}
+}
 
 int DMRGCat::QMat::v2QMat(const double* f){
 	int id = 0;
