@@ -329,15 +329,15 @@ void DMRGCat::QWave::MEnvAct(double lamda, const QMat& Ol, const QMat& Or, QWave
 
 
 void DMRGCat::QWave::NEnvAct(double lamda, const QMat& Ol, const QMat& Or, QWave& out)const{
-	if (Ol.getIsFermion()){
+	if (Or.getIsFermion()){
 		for (const auto& x : MNQID2SysEnvNo){
 			auto xn = Ol.RQID2MatNo.find(x.first.second);
 			if (xn != Ol.RQID2MatNo.end()){
 				auto newno = out.MNQID2SysEnvNo.find({ x.first.first, Ol.R2LID.at(x.first.second) });
 				if (newno != out.MNQID2SysEnvNo.end()){
 					double coe = lamda * Ol.SubMat.at(xn->second)(0, 0);
-					coe *= (double)DMRGCat::getFermionSign(x.first.first, x.first.second);
-					DMRGCat::rightTimeLSign(coe, Or, SysEnvQMat.at(x.second), out.SysEnvQMat.at(newno->second));
+					coe *= (double)DMRGCat::getFermionSign(x.first.second);
+					DMRGCat::rightTime(coe, Or, SysEnvQMat.at(x.second), out.SysEnvQMat.at(newno->second));
 				}
 			}
 		}
