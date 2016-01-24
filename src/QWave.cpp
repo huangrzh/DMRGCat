@@ -175,7 +175,7 @@ void DMRGCat::QWave::twoBody(int flagl, const QMat& Ol, int flagr, const QMat& O
 
 void DMRGCat::QWave::twoBody(int flagl, const QMat& Ol, int flagr, const QMat& Or, const double& lamda, QWave& out)const{
 	int flag = flagl * 10 + flagr;
-	std::cout << "flag = " << flag << "\n";
+	//std::cout << "flag = " << flag << "\n";
 	switch (flag){
 	case 12:{SysMAct(lamda, Ol, Or, out); break; }
 	case 13:{SysNAct(lamda, Ol, Or, out); break; }
@@ -675,7 +675,11 @@ void DMRGCat::QWave::fourBody(double lamda, const QMat& O1, const QMat& Om, cons
 }
 
 
-
+void DMRGCat::QWave::zeros(){
+	for (auto& x : SysEnvQMat){
+		x.zeros();
+	}
+}
 
 void DMRGCat::QWave::v2QWave(const double* f)
 {
