@@ -342,7 +342,7 @@ void DMRGCat::QMat::trans(const QMat& m){
 	for (int i = 0; i < size; i++){
 		LRID.push_back({m.LRID.at(i).second, m.LRID.at(i).first});
 		R2LID[m.LRID.at(i).first] = m.LRID.at(i).second;
-		SubMat.push_back(m.SubMat.at(i));
+		SubMat.push_back(m.SubMat.at(i).t());
 	}
 	LQID2MatNo = m.RQID2MatNo;
 	RQID2MatNo = m.LQID2MatNo;
