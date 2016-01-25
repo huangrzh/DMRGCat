@@ -614,14 +614,8 @@ void DMRGCat::QMat::getReNormUAndBase(int SavedD, QMat& reNormU, BlockQBase& UBa
 		}
 	}
 
-	std::cout << "UBase got\n";
-	system("pause");
-	UBase.print("UBase");
-	system("pause");
 	arma::mat tempMat;
 	reNormU.SubMat = std::vector<arma::mat>(UBase.SubQIDDim.size(),tempMat);
-	std::cout << reNormU.SubMat.size() << "\n";
-	system("pause");
 
 	int matNo = 0;
 	std::map<int, int> HasMat;
@@ -633,22 +627,13 @@ void DMRGCat::QMat::getReNormUAndBase(int SavedD, QMat& reNormU, BlockQBase& UBa
 			reNormU.RQID2MatNo[Denmat.at(i).Q] = matNo;
 			reNormU.LQID2MatNo[Denmat.at(i).Q] = matNo;
 			HasMat[Denmat.at(i).Q] = 0;
-			std::cout << "1\n";
-			std::cout << "matNo = " << matNo << "\n";			
 			reNormU.SubMat.at(matNo).zeros(Denmat.at(i).EigVector.n_elem, UBase.SubQIDDim.at(Denmat.at(i).Q));
-			std::cout << "2\n";
 			reNormU.SubMat.at(matNo).col(0) = Denmat.at(i).EigVector;
-			std::cout << "3\n";
 			matNo++;
 		}
 		else{
 			HasMat[Denmat.at(i).Q] += 1;
-			std::cout << "4\n";
-			std::cout << "HasMat size = " << HasMat[Denmat.at(i).Q] << "\n";
-			std::cout << reNormU.SubMat.at(reNormU.RQID2MatNo.at(Denmat.at(i).Q)).n_rows << ", " << reNormU.SubMat.at(reNormU.RQID2MatNo.at(Denmat.at(i).Q)).n_cols << "\n";
 			reNormU.SubMat.at(reNormU.RQID2MatNo.at(Denmat.at(i).Q)).col(HasMat[Denmat.at(i).Q]) = Denmat.at(i).EigVector;
-			std::cout << "5\n";
 		}
 	}
-	std::cout << "get reNormU over\n";
 }

@@ -23,5 +23,11 @@ void DMRGCat::DMRG::warmUp(){
 
 	for (int i = 1; i < lpart; i++){
 		SuperBlock superChain(Para, SubS, SubM, SubN, SubE);
+		QMat reNormU;
+		BlockQBase UBase;
+		superChain.getReNormU(reNormU, UBase);
+		Block olds(SubS);
+		Block olde(SubE);
+		
 	}
 }

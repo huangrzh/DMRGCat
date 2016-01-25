@@ -14,6 +14,7 @@ namespace DMRGCat{
 class SuperBlock{
 	public:
 		SuperBlock(Parameter& para, Block& sys, Block& m, Block& n, Block& env);
+		void getReNormU(QMat& U, BlockQBase& UBase)const;
 		
 	private:
 		QWave GsWave0;
@@ -31,6 +32,7 @@ class SuperBlock{
 		void in2out(const QWave& in, QWave& out);
 		void f1tof2(const double *f1, double *f2);
 
+		
 		void calPhysicalQuantity();
 		void preWaveStep1();
 		void preWaveStep2();
