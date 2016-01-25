@@ -9,6 +9,13 @@ DMRGCat::Block::~Block(){}
 
 //Single site block;
 DMRGCat::Block::Block(const Parameter& para){
+	initial(para);
+}
+
+
+void DMRGCat::Block::initial(const Parameter& para){
+	clear();
+
 	QSpace.genSiteQBase();
 #ifdef FERMION_HUBBARD	
 	//q(up,down)
@@ -23,8 +30,8 @@ DMRGCat::Block::Block(const Parameter& para){
 
 	//Cup
 	std::vector<std::pair<int, int>> idvec;
-	idvec.push_back({id00,id10});
-	idvec.push_back({id01,id11});
+	idvec.push_back({ id00, id10 });
+	idvec.push_back({ id01, id11 });
 	QMat cup(idvec);
 	QOperator.push_back(cup);
 
@@ -38,10 +45,10 @@ DMRGCat::Block::Block(const Parameter& para){
 
 	//Cdown
 	idvec.clear();
-	idvec.push_back({id00,id01});
-	idvec.push_back({id10,id11});
-	std::vector<double> coe = {1,-1};
-	QMat cdown(idvec,coe);
+	idvec.push_back({ id00, id01 });
+	idvec.push_back({ id10, id11 });
+	std::vector<double> coe = { 1, -1 };
+	QMat cdown(idvec, coe);
 	QOperator.push_back(cdown);
 
 
@@ -53,8 +60,8 @@ DMRGCat::Block::Block(const Parameter& para){
 
 	//Nup
 	idvec.clear();
-	idvec.push_back({id10,id10});
-	idvec.push_back({id11,id11});
+	idvec.push_back({ id10, id10 });
+	idvec.push_back({ id11, id11 });
 	QMat Nup(idvec);
 	QOperator.push_back(Nup);
 
@@ -69,13 +76,14 @@ DMRGCat::Block::Block(const Parameter& para){
 
 	//Site Hamiltonian
 	idvec.clear();
-	idvec.push_back({id11,id11});
+	idvec.push_back({ id11, id11 });
 	coe.clear();
 	coe.push_back(para.getU());
-	QMat siteH(idvec,coe);
+	QMat siteH(idvec, coe);
 	QOperator.push_back(siteH);
 #endif
 }
+
 
 DMRGCat::Block::Block(const Block& var){
 	QSpace = var.QSpace;

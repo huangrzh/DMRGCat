@@ -1,9 +1,8 @@
-#ifndef DMRG
-#define DMRG
+#ifndef DMRG_H
+#define DMRG_H
 
 #include <vector>
 #include "Parameter.h"
-#include "QMat.h"
 #include "Block.h"
 
 
@@ -16,7 +15,11 @@ class DMRG{
 		void warmUp();
 		void sweep();		
 	private:
-		
+		Parameter Para;
+		Block SubS;
+		Block SubM;
+		Block SubN;
+		Block SubE;
 
 };
 

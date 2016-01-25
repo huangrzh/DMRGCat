@@ -30,11 +30,10 @@ class SuperBlock{
 		void calGroundState();
 		void in2out(const QWave& in, QWave& out);
 		void f1tof2(const double *f1, double *f2);
+
 		void calPhysicalQuantity();
-		
 		void preWaveStep1();
 		void preWaveStep2();
-
 };
 
 	

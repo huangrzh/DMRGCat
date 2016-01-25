@@ -43,6 +43,24 @@ void DMRGCat::SuperBlock::calGroundState(){
 	double GsEnergy = con.eng;
 	con.NormTo1(con.f0);
 	GsWave.v2QWave(con.f0.memptr());// change sup.Wave = GSWave <- f0
+
+	std::cout << "start wave2QMat\n";
+	system("pause");
+	QMat waveMat;
+	GsWave.wave2QMat(PToS->QSpace, PToM->QSpace, PToN->QSpace, PToE->QSpace, waveMat);
+	std::cout << "before print waveMat\n";
+	system("pause");
+	waveMat.print("waveMat");
+	system("pause");
+
+	QMat U;
+	BlockQBase UBase;
+	waveMat.getReNormUAndBase(Para->getD(), U, UBase);
+	std::cout << "get renorm U over\n";
+	system("pause");
+	UBase.print("UBase");
+	system("pause");
+	U.print("U");
 }
 
 

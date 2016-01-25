@@ -3,7 +3,7 @@
 #define DMRGCATDATATYPE
 
 #include <unordered_map>
-
+#include <armadillo>
 
 
 namespace DMRGCat{
@@ -51,6 +51,16 @@ namespace DMRGCat{
 		BlockN,
 		BlockE,
 	};
+
+
+	//get reNorm U matrix;
+	struct EigStruc{
+		int Q;
+		double Lamda;
+		arma::vec EigVector;
+	};	
+
+	bool EigStruc_cmp(EigStruc dat1, EigStruc dat2); 
 }
 
 

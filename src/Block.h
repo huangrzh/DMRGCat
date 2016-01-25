@@ -20,6 +20,7 @@ public:
 	~Block();
 	Block(const Parameter& para, const Block& old);
 
+	void initial(const Parameter& para);
 	void operator=(const Block& var);
 	void trunc(const BlockQBase& UBase, const QMat& truncU);
 	void clear();

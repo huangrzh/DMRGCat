@@ -28,6 +28,7 @@ class QWave{
 		void print()const;
 		void print(std::string s)const;
 
+		void wave2QMat(const BlockQBase& s, const BlockQBase& m, const BlockQBase& n, const BlockQBase& e, QMat& var)const;
 		friend class SuperBlock;
 	private:
 		int Dim;

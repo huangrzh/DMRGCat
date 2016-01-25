@@ -85,6 +85,9 @@ public:
 	int QMat2v(double *f)const;
 	void print()const;
 	void print(std::string)const;
+	void getReNormUAndBase(int saveD, QMat& U, BlockQBase& UBase)const;
+
+	friend class QWave;
 private:
 
 #ifdef FERMION
