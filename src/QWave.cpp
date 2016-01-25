@@ -247,7 +247,7 @@ void DMRGCat::QWave::SysNAct(double lamda, const QMat& Ol, const QMat& Or, QWave
 
 
 void DMRGCat::QWave::SysEnvAct(double lamda, const QMat& Ol, const QMat& Or, QWave& out)const{
-	if (Ol.getIsFermion()){
+	if (Or.getIsFermion()){
 		for (const auto& x : MNQID2SysEnvNo){
 			double coe = lamda * (double)DMRGCat::getFermionSign(x.first.second);
 			DMRGCat::lrTimeLSign(coe, Ol, Or, SysEnvQMat.at(x.second), out.SysEnvQMat.at(x.second));
@@ -255,8 +255,7 @@ void DMRGCat::QWave::SysEnvAct(double lamda, const QMat& Ol, const QMat& Or, QWa
 	}
 	else{
 		for (const auto& x : MNQID2SysEnvNo){
-			double coe = lamda * (double)DMRGCat::getFermionSign(x.first.second);
-			DMRGCat::lrTime(coe, Ol, Or, SysEnvQMat.at(x.second), out.SysEnvQMat.at(x.second));
+			DMRGCat::lrTime(lamda, Ol, Or, SysEnvQMat.at(x.second), out.SysEnvQMat.at(x.second));
 		}
 	}
 }

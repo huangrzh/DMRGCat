@@ -5,6 +5,8 @@
 #include "../testFiles/testQMat.h"
 #include "../testFiles/testBlock.h"
 #include "../testFiles/testQWave.h"
+#include "../testFiles/testSuperBlock.h"
+#include "../testFiles/exactHubbard.h"
 #include "U1Q.h"
 #include "Parameter.h"
 #include "Block.h"
@@ -15,8 +17,9 @@ int main(){
 	//testBlockQBase();	
 	//testQMat();
 	//testBlock();
-	testQWave();
-
+	//testQWave();
+	testSuperBlock();
+	//exactHubbard();
 
 #ifdef VISUAL
 	system("pause");
