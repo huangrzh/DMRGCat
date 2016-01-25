@@ -26,25 +26,12 @@ void DMRGCat::SuperBlock::calGroundState(){
 	for (int j = 0; j < 400; j++){
 		if (iter == 0){
 			f1tof2(con.f0.memptr(), con.f1.memptr());// f1 = H f0
-			//con.f0.print("f0");
-			//system("pause");
-			//con.f1.print("f1");
-			//system("pause");
 		}
 		breakfor = con.abc_2(iter);
 		if (breakfor){
 			break;
 		}	
-
-		//con.f2.print("before f2");
-		//system("pause");
-		//con.f3.print("before f3");
-		//system("pause");
 		f1tof2(con.f2.memptr(), con.f3.memptr()); // f3 = H f2
-		//con.f2.print("f2");
-		//system("pause");
-		//con.f3.print("f3");
-		//system("pause");
 		con.abc_4();
 		iter++;
 
@@ -65,19 +52,17 @@ void DMRGCat::SuperBlock::f1tof2(const double *f1, double *f2){
 	GsWave0.v2QWave(f1);
 	in2out(GsWave0, GsWave);
 	GsWave.QWave2v(f2);
-	//system("pause");
 }
 
 
 
 void DMRGCat::SuperBlock::in2out(const QWave& in, QWave& out){
 	//SiteH sys,m,n,env
-	/*
 	in.oneBody(BlockS, PToS->QOperator.at(SiteH), out);	
 	in.oneBody(BlockM, PToM->QOperator.at(SiteH), out);
 	in.oneBody(BlockN, PToN->QOperator.at(SiteH), out);
 	in.oneBody(BlockE, PToE->QOperator.at(SiteH), out);
-	*/
+	
 	
 	//sys-m
 	in.twoBody(BlockS, PToS->QOperator.at(CupDag),   BlockM, PToM->QOperator.at(Cup),       Para->getT(),  out);
@@ -100,12 +85,4 @@ void DMRGCat::SuperBlock::in2out(const QWave& in, QWave& out){
 	in.twoBody(BlockN, PToN->QOperator.at(Cup),      BlockE, PToE->QOperator.at(CupDag),   -Para->getT(), out);
 	in.twoBody(BlockN, PToN->QOperator.at(CdownDag), BlockE, PToE->QOperator.at(Cdown),     Para->getT(), out);
 	in.twoBody(BlockN, PToN->QOperator.at(Cdown),    BlockE, PToE->QOperator.at(CdownDag), -Para->getT(), out);
-
-	/*
-	//sys-env
-	in.twoBody(BlockS, PToS->QOperator.at(CupDag),   BlockE, PToE->QOperator.at(Cup),       Para->getT(), out);
-	in.twoBody(BlockS, PToS->QOperator.at(Cup),      BlockE, PToE->QOperator.at(CupDag),   -Para->getT(), out);
-	in.twoBody(BlockS, PToS->QOperator.at(CdownDag), BlockE, PToE->QOperator.at(Cdown),     Para->getT(), out);
-	in.twoBody(BlockS, PToS->QOperator.at(Cdown),    BlockE, PToE->QOperator.at(CdownDag), -Para->getT(), out);
-	*/
 }
