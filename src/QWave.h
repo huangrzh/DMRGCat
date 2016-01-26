@@ -19,7 +19,6 @@ class QWave{
 		~QWave();
 		QWave(int totqID, Block& sys, Block& m, Block& n, Block& env);
 		int setWave(int totqID, Block& sys, Block& m, Block& n, Block& env);
-		void getTruncU(BlockQBase& UBase, QMat& truncU);
 
 		void zeros();
 		void v2QWave(const double* f);

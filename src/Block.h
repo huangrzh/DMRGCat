@@ -19,15 +19,18 @@ public:
 	Block(const Block& var);
 	~Block();
 	Block(const Parameter& para, const Block& old);
-
+	
+	void update(const Parameter& para, const Block& old);
 	void initial(const Parameter& para);
 	void operator=(const Block& var);
-	void trunc(const BlockQBase& UBase, const QMat& truncU);
+	void reNorm(const BlockQBase& UBase, const QMat& reNormU);
 	void clear();
 
 
 	void save(std::ofstream& savefile)const;
+	void save(int s)const;
 	void load(std::ifstream& loadfile);
+	void load(int s);
 	void print()const;
 	void print(std::string)const;
 

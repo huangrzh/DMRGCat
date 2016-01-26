@@ -10,6 +10,7 @@
 #include "U1Q.h"
 #include "Parameter.h"
 #include "Block.h"
+#include "DMRG.h"
 
 
 int main(){	
@@ -18,8 +19,9 @@ int main(){
 	//testQMat();
 	//testBlock();
 	//testQWave();
-	testSuperBlock();
-	//exactHubbard();
+	//testSuperBlock();
+
+	DMRGCat::DMRG task0;
 
 #ifdef VISUAL
 	system("pause");

@@ -11,6 +11,7 @@ namespace DMRGCat{
 
 class DMRG{
 	public:
+		DMRG();
 		void initial();
 		void warmUp();
 		void sweep();		
