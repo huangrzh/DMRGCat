@@ -92,6 +92,7 @@ DMRGCat::Block::Block(const Block& var){
 
 
 void DMRGCat::Block::operator=(const Block& var){
+	clear();
 	QSpace = var.QSpace;
 	QOperator = var.QOperator;
 }
@@ -156,9 +157,15 @@ void DMRGCat::Block::update(const Parameter& para, const Block& old){
 
 void DMRGCat::Block::reNorm(const BlockQBase& UBase, const QMat& reNormU){
 	QSpace.truncate(UBase);
+
+	QSpace.print("QSpace");
+	system("pause");
 	for (auto& x : QOperator){
 		x.trunc(UBase, reNormU);
 	}
+
+	print("after reNorm");
+	system("pause");
 }
 
 

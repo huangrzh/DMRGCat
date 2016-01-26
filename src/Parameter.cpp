@@ -52,6 +52,10 @@ std::ostream& DMRGCat::operator<<(std::ostream& s, const DMRGCat::Parameter& par
     return s;
 }
 
+void DMRGCat::Parameter::setTotQNoID(int id){
+	TotQNoID = id;
+}
+
 
 int DMRGCat::Parameter::getL()const{
 	return ChainL;
@@ -66,6 +70,12 @@ double DMRGCat::Parameter::getT()const{
 int DMRGCat::Parameter::getD()const{
 	return SavedD;
 }
+
+
+int DMRGCat::Parameter::getTotQNoID()const{
+	return TotQNoID;
+}
+
 int DMRGCat::Parameter::getSweepNo()const{
 	return SweepNo;
 }

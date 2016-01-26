@@ -75,9 +75,9 @@ int DMRGCat::Conjugate::abc_2(const long &iter) {
 	}
 	double x33 = f1timesf2(f3, f3); // x33=<f3|f3>
 	double errorNow = (y00 * x33) / (eng * eng);
-	if (iter % 30 == 0){
-		cout << "    Energy[" << iter << "] = " << setprecision(18) << eng << ", errorbar = " << errorNow << endl;
-	}
+	//if (iter % 50 == 0){
+	//	cout << "    Energy[" << iter << "] = " << setprecision(18) << eng << ", errorbar = " << errorNow << endl;
+	//}
 
 	if (errorNow < ErrorBar) return 1;
 	if (iter == 0) {

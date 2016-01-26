@@ -16,12 +16,14 @@ class Parameter{
 		void load(std::ifstream& loadfile);
 		friend std::ostream& operator<<(std::ostream& s, const Parameter& para);
 
+		void setTotQNoID(int id);
 		int getL()const;
+		int getD()const;
+		int getTotQNoID()const;
+		int getSweepNo()const;
 #ifdef FERMION_HUBBARD
 		double getU()const;
-		double getT()const;
-		int getD()const;
-		int getSweepNo()const;
+		double getT()const;		
 #endif
 	private:
 
@@ -29,6 +31,7 @@ class Parameter{
 		int ChainL;
 		double T;
 		double U;
+		int TotQNoID;
 		int SavedD;
 		int SweepNo; 		// no need to store;
 #endif

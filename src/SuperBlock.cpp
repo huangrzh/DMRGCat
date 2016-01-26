@@ -3,8 +3,7 @@
 
 
 DMRGCat::SuperBlock::SuperBlock(Parameter& para, Block& sys, Block& m, Block& n, Block& env){
-	std::vector<int> qno = {para.getL()/2,para.getL()/2};
-	TotQNoID = DMRGCat::getID(qno); ;
+	TotQNoID = para.getTotQNoID();
 	PToS = &sys;
 	PToM = &m;
 	PToN = &n;
@@ -20,7 +19,7 @@ DMRGCat::SuperBlock::SuperBlock(Parameter& para, Block& sys, Block& m, Block& n,
 
 void DMRGCat::SuperBlock::calGroundState(){
 	Conjugate con(Dim);
-	con.setErrorBar(4.e-30);
+	con.setErrorBar(4.e-20);
 	long iter = 0;
 	bool breakfor = false;
 	for (int j = 0; j < 400; j++){
@@ -35,14 +34,15 @@ void DMRGCat::SuperBlock::calGroundState(){
 		con.abc_4();
 		iter++;
 
-		if (iter == 30){
-			con.restart(iter);
-		}
+		//if (iter == 30){
+		//	con.restart(iter);
+		//}
 	}
 
 	double GsEnergy = con.eng;
 	con.NormTo1(con.f0);
 	GsWave.v2QWave(con.f0.memptr());// change sup.Wave = GSWave <- f0
+	std::cout << ", Energy = " << con.eng << "\n";
 }
 
 
