@@ -766,7 +766,7 @@ void DMRGCat::QWave::wave2QMat(const BlockQBase& s, const BlockQBase& m, const B
 				//std::cout << U1Q(se.first) << ", " << U1Q(se.second) << "\n";
 				int seMatNo = SysEnvQMat.at(mn.second).RQID2MatNo.at(se.second);
 				//std::cout << "seMatNo = " << seMatNo << std::endl;
-				var.matCompress(var.SubMat.at(var.RQID2MatNo[rid]), msSpace.StartDim.at({ mn.first.first, se.first }), SysEnvQMat.at(mn.second).SubMat.at(seMatNo), neSpace.StartDim.at({ mn.first.second, se.second }));
+				var.matCompress(var.SubMat.at(var.RQID2MatNo.at(rid)), msSpace.StartDim.at({ mn.first.first, se.first }), SysEnvQMat.at(mn.second).SubMat.at(seMatNo), neSpace.StartDim.at({ mn.first.second, se.second }));
 				//std::cout << "compress over\n";
 			}
 		}

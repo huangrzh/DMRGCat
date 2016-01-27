@@ -44,21 +44,21 @@ void DMRGCat::DMRG::warmUp(){
 		
 		Block olds(SubS);
 		SubS.update(Para,olds);
-		SubS.reNorm(UBase, reNormU);
+		//SubS.reNorm(UBase, reNormU);
 		SubE = SubS;
 		
 		Os++;
 		Oe--;
 		SubS.save(Os);
-		Block testBlock;
-		std::cout << "test load block\n";
-		testBlock.load(Os);
-		system("pause");
-
+		//Block testBlock;
+		//std::cout << "test load block\n";
+		//system("pause");
+		//testBlock.load(Os);
+		//system("pause");
 		SubE.save(Oe);
 	}
-	std::cout << "\n\n";
-	system("pause");
+	//std::cout << "\n\n";
+	//system("pause");
 }
 
 
@@ -74,24 +74,39 @@ void DMRGCat::DMRG::sweep(){
 		while (OneSweep){
 			std::cout << "#" << i << ", @" << Os << ", @" << Os+3*SweepDir;
 			SuperBlock superChain(Para, SubS, SubM, SubN, SubE);
-			system("pause");
+			//system("pause");
 
 			QMat reNormU;
 			BlockQBase UBase;
+			//std::cout << "1\n";
 			superChain.getReNormU(reNormU, UBase);
 
 			Block olds(SubS);
 			SubS.update(Para, olds);
+			//std::cout << "2\n";
 			SubS.reNorm(UBase, reNormU);
 			
 			Os += SweepDir;
+			//std::cout << "3\n";
 			SubS.save(Os);
 			SubE.load(Os + 3 * SweepDir);
+
+			
 			OneSweep = !((SweepDir == 1 && Os == Para.getL() - 3) || (SweepDir == -1 && Os == 4));
 		}
 		std::cout << "\n\n";
+		//std::cout << "test last point\n";
+		system("pause");
+		//Block lastE;
+		//lastE.initial(Para);
+		//SuperBlock superChain_test(Para, SubS, SubM, SubN, lastE);
+		//system("pause");
 		Os = SweepDir == 1 ? Para.getL() : 1;
 		SweepDir = -SweepDir;
-		std::swap(SubS, SubE);
+		Block tempBlock;
+		tempBlock = SubS;
+		SubS = SubE;
+		SubE = tempBlock;
+		//std::swap(SubS, SubE);
 	}
 }

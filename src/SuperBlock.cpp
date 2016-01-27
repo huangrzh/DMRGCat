@@ -19,7 +19,7 @@ DMRGCat::SuperBlock::SuperBlock(Parameter& para, Block& sys, Block& m, Block& n,
 
 void DMRGCat::SuperBlock::calGroundState(){
 	Conjugate con(Dim);
-	con.setErrorBar(4.e-20);
+	con.setErrorBar(4.e-30);
 	long iter = 0;
 	bool breakfor = false;
 	for (int j = 0; j < 400; j++){
@@ -42,7 +42,7 @@ void DMRGCat::SuperBlock::calGroundState(){
 	double GsEnergy = con.eng;
 	con.NormTo1(con.f0);
 	GsWave.v2QWave(con.f0.memptr());// change sup.Wave = GSWave <- f0
-	std::cout << ", Energy = " << con.eng << "\n";
+	std::cout << ", Dim = " << Dim << ", Energy = " << std::setprecision(12) << con.eng << "\n";
 }
 
 
