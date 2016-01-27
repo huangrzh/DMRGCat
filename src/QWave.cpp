@@ -737,7 +737,6 @@ void DMRGCat::QWave::wave2QMat(const BlockQBase& s, const BlockQBase& m, const B
 
 	int matNo = 0;
 	for (const auto& mn : MNQID2SysEnvNo){
-		//std::cout << U1Q(mn.first.first) << ", " << U1Q(mn.first.second) << "\n\n";
 		for (const auto& se : SysEnvQMat.at(mn.second).LRID){
 			int lid = DMRGCat::getAddID(mn.first.first, se.first);
 			int rid = DMRGCat::getAddID(mn.first.second, se.second);
@@ -750,29 +749,14 @@ void DMRGCat::QWave::wave2QMat(const BlockQBase& s, const BlockQBase& m, const B
 				arma::mat tempMat(msSpace.SubQIDDim.at(lid), neSpace.SubQIDDim.at(rid));
 				tempMat.zeros();
 				var.SubMat.push_back(tempMat);
-				//tempMat.print("tempMat");
-				//system("pause");
-				//std::cout << U1Q(se.first) << ", " << U1Q(se.second) << "\n";
 				int seMatNo = SysEnvQMat.at(mn.second).RQID2MatNo.at(se.second);
-				//std::cout << "seMatNo = " << seMatNo << std::endl;
-				var.matCompress(var.SubMat.at(matNo), msSpace.StartDim.at({ mn.first.first, se.first }), SysEnvQMat.at(mn.second).SubMat.at(seMatNo), neSpace.StartDim.at({ mn.first.second, se.second }));
-				
-				//std::cout << "compress over\n";
-				//var.print("var");
-				//system("pause"); 
+				var.matCompress(var.SubMat.at(matNo), msSpace.StartDim.at({ mn.first.first, se.first }), SysEnvQMat.at(mn.second).SubMat.at(seMatNo), neSpace.StartDim.at({ mn.first.second, se.second })); 
 				matNo++;
 			}
 			else{
-				//std::cout << U1Q(se.first) << ", " << U1Q(se.second) << "\n";
 				int seMatNo = SysEnvQMat.at(mn.second).RQID2MatNo.at(se.second);
-				//std::cout << "seMatNo = " << seMatNo << std::endl;
 				var.matCompress(var.SubMat.at(var.RQID2MatNo.at(rid)), msSpace.StartDim.at({ mn.first.first, se.first }), SysEnvQMat.at(mn.second).SubMat.at(seMatNo), neSpace.StartDim.at({ mn.first.second, se.second }));
-				//std::cout << "compress over\n";
 			}
 		}
 	}
-
-
-	//std::cout << "over\n";
-	//system("pause");
 }

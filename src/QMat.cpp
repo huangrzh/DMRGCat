@@ -298,29 +298,6 @@ void DMRGCat::QMat::load(std::ifstream& loadfile){
 
 
 void DMRGCat::QMat::trunc(const BlockQBase& UBase, const QMat& truncU){
-	QMat saveQMat;
-	saveQMat.IsFermion = IsFermion;
-
-	int matno = 0;
-	for (const auto& x : RQID2MatNo){
-		if (truncU.RQID2MatNo.find(x.first) != truncU.RQID2MatNo.end() && truncU.LQID2MatNo.find(R2LID.at(x.first)) != truncU.LQID2MatNo.end()){
-			int lmatno = truncU.LQID2MatNo.at(R2LID.at(x.first));
-			int rmatno = truncU.RQID2MatNo.at(x.first);
-			arma::mat tempmat;
-			tempmat = truncU.SubMat.at(lmatno).t() * SubMat.at(x.second) * truncU.SubMat.at(rmatno);
-
-			saveQMat.LRID.push_back({R2LID.at(x.first),x.first});
-			saveQMat.R2LID[x.first] = R2LID.at(x.first);
-			saveQMat.RQID2MatNo[x.first] = matno;
-			saveQMat.LQID2MatNo[R2LID.at(x.first)] = matno;
-			saveQMat.SubMat.push_back(tempmat);
-			matno++;
-		}
-	}
-	*this = saveQMat;
-
-	//QMat saveQMat(*this);
-	/*
 	std::unordered_map<int, int> saveR2No = RQID2MatNo;
 	std::vector<std::pair<int, int>> saveLRID = LRID;
 	std::vector<arma::mat> saveMat = SubMat;
@@ -334,8 +311,6 @@ void DMRGCat::QMat::trunc(const BlockQBase& UBase, const QMat& truncU){
 		} 
 	}
 
-	//std::cout << "trun size = " << truncLRID.size() << "\n";
-	//system("pause");
 	int subno = 0;
 	for (const auto&x : saveLRID){
 		if (truncLRID.find(x) == truncLRID.end()){
@@ -358,39 +333,6 @@ void DMRGCat::QMat::trunc(const BlockQBase& UBase, const QMat& truncU){
 		rno = truncU.RQID2MatNo.at(x.first);
 		SubMat.at(no) = (truncU.SubMat.at(lno).t()) * (SubMat.at(no)) * (truncU.SubMat.at(rno));
 	}
-	*/
-	/*
-	std::cout << "check LRID\n";
-	std::cout << "diff size = " << LRID.size() - saveQMat.LRID.size() << "\n";
-	for (int i = 0; i < LRID.size(); i++){
-		std::cout << U1Q(LRID.at(i).first) << ", " << U1Q(LRID.at(i).second) << "\n";
-		std::cout << U1Q(saveQMat.LRID.at(i).first) << ", " << U1Q(saveQMat.LRID.at(i).second) << "\n";
-	}
-
-	std::cout << "check RQ2MatNo\n";
-	std::cout << "diff size = " << RQID2MatNo.size() - saveQMat.RQID2MatNo.size() << "\n";
-	for (const auto& x:RQID2MatNo){
-		std::cout << "2 " << U1Q(x.first) << ", diff = " << x.second-saveQMat.RQID2MatNo.at(x.first) << "\n";
-	}
-	system("pause");
-
-
-	std::cout << "check LQ2MatNo\n";
-	std::cout << "diff size = " << LQID2MatNo.size() - saveQMat.LQID2MatNo.size() << "\n";
-	for (const auto& x : LQID2MatNo){
-		std::cout << "2 " << U1Q(x.first) << ", diff = " << x.second - saveQMat.LQID2MatNo.at(x.first) << "\n";
-	}
-	system("pause");
-
-
-
-	std::cout << "check SubMat\n";
-	std::cout << "diff size = " << SubMat.size() - saveQMat.SubMat.size() << "\n";
-	for (int i = 0; i < SubMat.size(); i++){
-		std::cout << "diff row = " << SubMat.at(i).n_rows - saveQMat.SubMat.at(i).n_rows << ", diff cols = " << SubMat.at(i).n_cols - saveQMat.SubMat.at(i).n_cols << "\n";
-	}
-	system("pause");
-	*/
 }
 
 
@@ -648,25 +590,7 @@ bool DMRGCat::EigStruc_cmp(EigStruc dat1, EigStruc dat2){
 void DMRGCat::QMat::getReNormUAndBase(int SavedD, QMat& reNormU, BlockQBase& UBase)const{
 	reNormU.clear();
 	UBase.clear();
-
-	int matno = 0;
-	for (const auto& x : RQID2MatNo){
-		arma::mat U, V;
-		arma::vec S;
-		arma::svd_econ(U, S, V, SubMat.at(x.second), "left", "std");
-		for (int i = 1; i <= S.n_elem; i++){
-			int lqid = R2LID.at(x.first);
-
-			UBase.SubQIDDim[lqid] = S.n_elem;
-			reNormU.LRID.push_back({ lqid, lqid });
-			reNormU.R2LID[lqid] = lqid;
-			reNormU.RQID2MatNo[lqid] = matno;
-			reNormU.LQID2MatNo[lqid] = matno;
-			reNormU.SubMat.push_back(U);
-			matno++;
-		}
-	}
-	/*
+	
 	std::vector<DMRGCat::EigStruc> Denmat;
 	for (const auto& x : LQID2MatNo){
 		arma::mat U, V;
@@ -680,14 +604,7 @@ void DMRGCat::QMat::getReNormUAndBase(int SavedD, QMat& reNormU, BlockQBase& UBa
 	}
 
 	int mmin = (SavedD > Denmat.size()) ? Denmat.size() : SavedD;
-
-	std::cout << "Denmat size = " << Denmat.size() << ", mmin = " << mmin << "\n";
 	sort(Denmat.begin(), Denmat.end(), DMRGCat::EigStruc_cmp);
-	for (int i = 0; i < Denmat.size(); i++){
-		std::cout << i << ", " << Denmat.at(i).Lamda << std::endl;
-	}
-	system("pause");
-
 
 	for (int i = 0; i < mmin; i++){
 		auto findi = UBase.SubQIDDim.find(Denmat.at(i).Q);
@@ -721,5 +638,4 @@ void DMRGCat::QMat::getReNormUAndBase(int SavedD, QMat& reNormU, BlockQBase& UBa
 			reNormU.SubMat.at(reNormU.RQID2MatNo.at(Denmat.at(i).Q)).col(HasMat[Denmat.at(i).Q]) = Denmat.at(i).EigVector;
 		}
 	}
-	*/
 }

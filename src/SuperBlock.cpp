@@ -38,11 +38,12 @@ void DMRGCat::SuperBlock::calGroundState(){
 		//	con.restart(iter);
 		//}
 	}
-
+	
 	double GsEnergy = con.eng;
 	con.NormTo1(con.f0);
 	GsWave.v2QWave(con.f0.memptr());// change sup.Wave = GSWave <- f0
-	std::cout << ", Dim = " << Dim << ", Energy = " << std::setprecision(12) << con.eng << "\n";
+	std::cout << "Dim=" << std::setiosflags(std::ios::left) << std::setw(8) << Dim;
+	std::cout << "E=" << std::setiosflags(std::ios::left) << std::setw(16) << std::setprecision(10) << con.eng << "\n";
 }
 
 

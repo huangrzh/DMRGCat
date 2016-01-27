@@ -156,13 +156,8 @@ void DMRGCat::Block::update(const Parameter& para, const Block& old){
 
 void DMRGCat::Block::reNorm(const BlockQBase& UBase, const QMat& reNormU){
 	QSpace.truncate(UBase);
-	//std::cout << "here before trunc QOperator\n";
-	int i = 0;
 	for (auto& x : QOperator){
-		//std::cout << "i = " << i << "\n";
 		x.trunc(UBase, reNormU);
-		//std::cout << "over " << i << "\n";
-		i++;
 	}
 }
 
@@ -203,7 +198,6 @@ void DMRGCat::Block::save(std::ofstream& savefile)const{
 void DMRGCat::Block::save(int s)const{
 	std::string outs = "Data/";
 	outs += std::to_string(s);
-	//std::cout << outs << "\n";
 	std::ofstream sfout(outs, std::ios::binary | std::ios::out);
 	save(sfout);
 	sfout.close();
@@ -211,19 +205,13 @@ void DMRGCat::Block::save(int s)const{
 
 void DMRGCat::Block::load(std::ifstream& loadfile){
 	clear();
-	//std::cout << "start load\n";
 	QSpace.load(loadfile);
-	//std::cout << "QSpace load over\n";
 	unsigned int size = 0;
 	loadfile.read((char*)&size, sizeof(int));
-	//std::cout << "size = " << size << "\n";
 	QMat tempVar;
 	QOperator = std::vector<QMat>(size, tempVar);
 	for (int i = 0; i < size; i++){
-		//std::cout << "load qmat " << i << "\n";
 		QOperator.at(i).load(loadfile);
-		//std::cout << i << "load over\n";
-		//system("pause");
 	}
 }
 
@@ -231,7 +219,6 @@ void DMRGCat::Block::load(std::ifstream& loadfile){
 void DMRGCat::Block::load(int s){
 	std::string ins = "Data/";
 	ins += std::to_string(s);
-	//std::cout << ins << "\n";
 	std::ifstream sfin(ins, std::ios::binary | std::ios::in);
 	load(sfin);
 	sfin.close();

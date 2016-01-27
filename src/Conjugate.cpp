@@ -37,7 +37,7 @@ if ( y_n == 'y' ) Ini_f0() ; // randomly initialize f0 if y_n=='y'
 
 void DMRGCat::Conjugate::Ini_f0() {
 	srand(time(NULL));
-#pragma omp parallel for
+//#pragma omp parallel for
 	for (long i = 0; i < Dim; i++){
 		f0[i] = (double)rand();
 	}
@@ -52,7 +52,7 @@ double DMRGCat::Conjugate::getErrorBar(const arma::vec& fin, const arma::vec& fo
 
 	arma::vec newv(Dim);
 	double aux = 1.0 / inner1;
-#pragma omp parallel for
+//#pragma omp parallel for
 	for (long j = 0; j < Dim; j++){
 		newv[j] = (fout[j] - lamda * fin[j]) / inner1;
 	}
@@ -69,7 +69,7 @@ int DMRGCat::Conjugate::abc_2(const long &iter) {
 	eng = y01 / y00;    // energy	
 
 	double aux = 2.0 / y00;
-#pragma omp parallel for
+//#pragma omp parallel for
 	for (long j = 0; j < Dim; j++){
 		f3[j] = (f1[j] - eng * f0[j]) * aux;
 	}
@@ -81,14 +81,14 @@ int DMRGCat::Conjugate::abc_2(const long &iter) {
 
 	if (errorNow < ErrorBar) return 1;
 	if (iter == 0) {
-#pragma omp parallel for
+//#pragma omp parallel for
 		for (long i = 0; i < Dim; i++){
 			f2[i] = -f3[i];
 		}
 	}
 	else {
 		double aaa = x33 / x33_old;
-#pragma omp parallel for
+//#pragma omp parallel for
 		for (long k = 0; k < Dim; k++){
 			f2[k] = -f3[k] + aaa * f2[k];
 		}
@@ -107,7 +107,7 @@ void DMRGCat::Conjugate::abc_4() {
 	double xc = x03 * y00 - y01 * y02;
 	double alpha = (-xb + sqrt(xb * xb - 4.0 * xa * xc)) / (2.0 * xa);
 
-#pragma omp parallel for
+//#pragma omp parallel for
 	for (long i = 0; i < Dim; i++) {
 		f0[i] += alpha * f2[i];
 		f1[i] += alpha * f3[i];
@@ -117,7 +117,7 @@ void DMRGCat::Conjugate::abc_4() {
 
 double DMRGCat::Conjugate::f1timesf2(const arma::vec& f, const arma::vec& g) {
 	double x = 0.0;
-#pragma omp parallel for reduction(+:x)
+//#pragma omp parallel for reduction(+:x)
 	for (long i = 0; i < Dim; i++){
 		x += f[i] * g[i];
 	}
@@ -129,7 +129,7 @@ double DMRGCat::Conjugate::f1timesf2(const arma::vec& f, const arma::vec& g) {
 
 void DMRGCat::Conjugate::NormTo1(arma::vec& f) {
 	double x = sqrt(f1timesf2(f, f));
-#pragma omp parallel for
+//#pragma omp parallel for
 	for (long i = 0; i < Dim; i++){
 		f[i] /= x;
 	}

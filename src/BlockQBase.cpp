@@ -86,15 +86,6 @@ void DMRGCat::getKronOrder(const DMRGCat::BlockQBase &b1, const DMRGCat::BlockQB
 
 //Use truncating U, which is got from density matrix or wave function, to truncate space;
 void DMRGCat::BlockQBase::truncate(const DMRGCat::BlockQBase &ubase){
-	auto saveSubQIDDim = SubQIDDim;
-	SubQIDDim.clear();
-	for (auto& x : saveSubQIDDim){
-		auto itfind = ubase.SubQIDDim.find(x.first);
-		if (itfind != ubase.SubQIDDim.end()){
-			SubQIDDim[x.first] = itfind->second;
-		}
-	}
-	/*
 	std::vector<int> eraseqs;
 	for (auto& x : SubQIDDim){
 		auto itfind = ubase.SubQIDDim.find(x.first);
@@ -105,18 +96,13 @@ void DMRGCat::BlockQBase::truncate(const DMRGCat::BlockQBase &ubase){
 			eraseqs.push_back(x.first);
 		}
 		else{
-			//std::cout << "diff dim = " << x.second - itfind->second << "\n";
 			x.second = itfind->second;
 		}
 	}
 
-	//std::cout << "erase size = " << eraseqs.size() << "\n";
-	//system("pause");
 	for (const auto& x : eraseqs){
-		//std::cout << "here\n";
 		SubQIDDim.erase(x);
 	}
-	*/
 }
 
 
