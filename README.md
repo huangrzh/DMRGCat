@@ -1,4 +1,10 @@
 # DMRGCat 
-I want to write a DMRG project which is simple and fast.
-
-I call it cat because my girl friend loves cat. Also I hope my codes catch core of DMRG algorithm.
+DMRGCat is a basical DMRG algorithm implementation written in c++.
+It includes classes
+  U1Q
+  BlockQBase
+  QMat
+  Block
+  SuperBlock
+  
+DMRGCat is model dependant at present. But its generalization to other models is not difficult.
