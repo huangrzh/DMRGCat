@@ -18,6 +18,41 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\Block.cpp" />
+    <ClCompile Include="..\..\..\src\BlockQBase.cpp" />
+    <ClCompile Include="..\..\..\src\Conjugate.cpp" />
+    <ClCompile Include="..\..\..\src\DMRG.cpp" />
+    <ClCompile Include="..\..\..\src\main.cpp" />
+    <ClCompile Include="..\..\..\src\Parameter.cpp" />
+    <ClCompile Include="..\..\..\src\QMat.cpp" />
+    <ClCompile Include="..\..\..\src\QWave.cpp" />
+    <ClCompile Include="..\..\..\src\SuperBlock.cpp" />
+    <ClCompile Include="..\..\..\src\U1Q.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\Block.h" />
+    <ClInclude Include="..\..\..\src\BlockQBase.h" />
+    <ClInclude Include="..\..\..\src\Conjugate.h" />
+    <ClInclude Include="..\..\..\src\datatype.h" />
+    <ClInclude Include="..\..\..\src\DMRG.h" />
+    <ClInclude Include="..\..\..\src\Parameter.h" />
+    <ClInclude Include="..\..\..\src\QMat.h" />
+    <ClInclude Include="..\..\..\src\QWave.h" />
+    <ClInclude Include="..\..\..\src\setting.h" />
+    <ClInclude Include="..\..\..\src\SuperBlock.h" />
+    <ClInclude Include="..\..\..\src\U1Q.h" />
+    <ClInclude Include="..\..\..\testFiles\exactHubbard.h" />
+    <ClInclude Include="..\..\..\testFiles\testBlock.h" />
+    <ClInclude Include="..\..\..\testFiles\testBlockQBase.h" />
+    <ClInclude Include="..\..\..\testFiles\testQMat.h" />
+    <ClInclude Include="..\..\..\testFiles\testQWave.h" />
+    <ClInclude Include="..\..\..\testFiles\testSuperBlock.h" />
+    <ClInclude Include="..\..\..\testFiles\testU1Q.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2D62EDE1-C605-47A6-A9DB-70D6EDEDE347}</ProjectGuid>
     <RootNamespace>DMRGCat</RootNamespace>
@@ -26,26 +61,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>Intel C++ Compiler XE 15.0</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>Intel C++ Compiler XE 15.0</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>Intel C++ Compiler XE 15.0</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>Intel C++ Compiler XE 15.0</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
     <UseIntelIPP>false</UseIntelIPP>
@@ -88,6 +123,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>D:\arma\armadillo-6.400.3\armadillo-6.400.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -114,6 +150,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>D:\arma\armadillo-6.400.3\armadillo-6.400.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OpenMP>GenerateParallelCode</OpenMP>
+      <Cpp0xSupport>true</Cpp0xSupport>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -121,25 +160,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\Block.h" />
-    <ClInclude Include="..\..\..\BlockQBase.h" />
-    <ClInclude Include="..\..\..\Parameter.h" />
-    <ClInclude Include="..\..\..\QMat.h" />
-    <ClInclude Include="..\..\..\setting.h" />
-    <ClInclude Include="..\..\..\U1Q.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\Block.cpp" />
-    <ClCompile Include="..\..\..\BlockQBase.cpp" />
-    <ClCompile Include="..\..\..\main.cpp" />
-    <ClCompile Include="..\..\..\Parameter.cpp" />
-    <ClCompile Include="..\..\..\QMat.cpp" />
-    <ClCompile Include="..\..\..\U1Q.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

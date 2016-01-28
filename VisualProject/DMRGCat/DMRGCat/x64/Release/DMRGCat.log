@@ -1,34 +1,32 @@
-﻿Build started 2016/1/7 9:49:55.
+﻿Build started 2016/1/28 14:59:00.
      1>Project "E:\Data\DMRGCat\VisualProject\DMRGCat\DMRGCat\DMRGCat.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /I"C:\Program Files (x86)\Visual Leak Detector\include" /Zi /nologo /W3 /WX- /sdl /O2 /Oi /GL /D _MBCS /Gm- /EHsc /MD /GS /Gy /Zc:wchar_t /Zc:forScope /Fo"x64\Release\\" /Fd"x64\Release\vc120.pdb" /Gd /TP /errorReport:prompt ..\..\..\Block.cpp ..\..\..\BlockQBase.cpp ..\..\..\main.cpp ..\..\..\Parameter.cpp ..\..\..\QMat.cpp ..\..\..\U1Q.cpp
+         C:\Program Files (x86)\Intel\Composer XE 2015\bin\Intel64\icl.exe /c /Qvc12 /Qlocation,link,"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\amd64" /I"D:\arma\armadillo-6.400.3\armadillo-6.400.3\include" /I"C:\Program Files (x86)\Visual Leak Detector\include" /Zi /nologo /W3 /O2 /Oi /Qipo /Qftz- /D __INTEL_COMPILER=1500 /D _MBCS /EHsc /MD /GS /Gy /Qoffload-option,mic,compiler,"-mkl=parallel" /Zc:wchar_t /Zc:forScope /Qopenmp /Qstd=c++11 /Fo"x64\Release\\" /Fd"x64\Release\vc120.pdb" /TP ..\..\..\src\Block.cpp ..\..\..\src\BlockQBase.cpp ..\..\..\src\Conjugate.cpp ..\..\..\src\DMRG.cpp ..\..\..\src\main.cpp ..\..\..\src\Parameter.cpp ..\..\..\src\QMat.cpp ..\..\..\src\QWave.cpp ..\..\..\src\SuperBlock.cpp ..\..\..\src\U1Q.cpp
          Block.cpp
          BlockQBase.cpp
-     1>..\..\..\BlockQBase.cpp(64): error C2039: 'unordered_map' : is not a member of 'std'
-     1>..\..\..\BlockQBase.cpp(64): error C2065: 'unordered_map' : undeclared identifier
-     1>..\..\..\BlockQBase.cpp(64): error C2062: type 'int' unexpected
-     1>..\..\..\BlockQBase.cpp(68): error C2065: 'qid_dim' : undeclared identifier
-     1>..\..\..\BlockQBase.cpp(68): error C2228: left of '.find' must have class/struct/union
-                 type is 'unknown-type'
-     1>..\..\..\BlockQBase.cpp(69): error C3536: 'find_id': cannot be used before it is initialized
-     1>..\..\..\BlockQBase.cpp(69): error C2065: 'qid_dim' : undeclared identifier
-     1>..\..\..\BlockQBase.cpp(69): error C2228: left of '.end' must have class/struct/union
-                 type is 'unknown-type'
-     1>..\..\..\BlockQBase.cpp(70): error C3536: 'find_id': cannot be used before it is initialized
-     1>..\..\..\BlockQBase.cpp(70): error C2227: left of '->second' must point to class/struct/union/generic type
-                 type is 'int'
-     1>..\..\..\BlockQBase.cpp(71): error C3536: 'find_id': cannot be used before it is initialized
-     1>..\..\..\BlockQBase.cpp(71): error C2227: left of '->second' must point to class/struct/union/generic type
-                 type is 'int'
-     1>..\..\..\BlockQBase.cpp(75): error C2065: 'qid_dim' : undeclared identifier
+         Conjugate.cpp
+         DMRG.cpp
          main.cpp
          Parameter.cpp
          QMat.cpp
-     1>..\..\..\QMat.cpp(170): warning C4018: '<' : signed/unsigned mismatch
-     1>..\..\..\QMat.cpp(171): warning C4018: '<' : signed/unsigned mismatch
+         QWave.cpp
+         SuperBlock.cpp
          U1Q.cpp
-     1>Done Building Project "E:\Data\DMRGCat\VisualProject\DMRGCat\DMRGCat\DMRGCat.vcxproj" (Build target(s)) -- FAILED.
+       Link:
+         C:\Program Files (x86)\Intel\Composer XE 2015\bin\Intel64\xilink.exe /OUT:"E:\Data\DMRGCat\VisualProject\DMRGCat\x64\Release\DMRGCat.exe" /NOLOGO /LIBPATH:"C:\Program Files (x86)\Visual Leak Detector\lib\Win64" mkl_intel_lp64_dll.lib mkl_intel_thread_dll.lib mkl_core_dll.lib libiomp5md.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"E:\Data\DMRGCat\VisualProject\DMRGCat\x64\Release\DMRGCat.pdb" /OPT:REF /OPT:ICF /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\Data\DMRGCat\VisualProject\DMRGCat\x64\Release\DMRGCat.lib" /MACHINE:X64 x64\Release\Block.obj
+         x64\Release\BlockQBase.obj
+         x64\Release\Conjugate.obj
+         x64\Release\DMRG.obj
+         x64\Release\main.obj
+         x64\Release\Parameter.obj
+         x64\Release\QMat.obj
+         x64\Release\QWave.obj
+         x64\Release\SuperBlock.obj
+         x64\Release\U1Q.obj
+         xilink: executing 'link'
+         DMRGCat.vcxproj -> E:\Data\DMRGCat\VisualProject\DMRGCat\x64\Release\DMRGCat.exe
+     1>Done Building Project "E:\Data\DMRGCat\VisualProject\DMRGCat\DMRGCat\DMRGCat.vcxproj" (Build target(s)).
 
-Build FAILED.
+Build succeeded.
 
-Time Elapsed 00:00:05.28
+Time Elapsed 00:00:27.68
