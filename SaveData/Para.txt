@@ -1,0 +1,7 @@
+Parameter: 
+
+L = 16
+t = -1	
+u = 3
+SavedD = 30
+MaxSweepNo = 5
