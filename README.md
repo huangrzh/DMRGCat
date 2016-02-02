@@ -9,3 +9,5 @@ It includes classes
   SuperBlock
   
 DMRGCat requires armadillo(http://arma.sourceforge.net/) and c++11.
+
+huangrzh@icloud.com
