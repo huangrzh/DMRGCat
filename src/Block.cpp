@@ -102,7 +102,6 @@ DMRGCat::Block::Block(const Parameter& para, const Block& old){
 }
 
 
-
 void DMRGCat::Block::update(const Parameter& para, const Block& old){
 	clear();
 	

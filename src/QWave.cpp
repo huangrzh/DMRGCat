@@ -11,7 +11,7 @@ DMRGCat::QWave::QWave(int totqID, Block& sys, Block& m, Block& n, Block& env){
 }
 
 
-int DMRGCat::QWave::setWave(int totqID, Block& sys, Block& m, Block& n, Block& env){
+int DMRGCat::QWave::setWave(int totqID, BlockQBase& sys, BlockQBase& m, BlockQBase& n, BlockQBase& env){
 	Dim = 0;
 	TotQID = totqID;
 
@@ -22,14 +22,14 @@ int DMRGCat::QWave::setWave(int totqID, Block& sys, Block& m, Block& n, Block& e
 
 	int sysEnvNo = 0;
 	//super block base and initial wave(whose elements all all zero);	
-	for (const auto& xm : m.QSpace.SubQIDDim){
-		for (const auto& xn : n.QSpace.SubQIDDim){
+	for (const auto& xm : m.SubQIDDim){
+		for (const auto& xn : n.SubQIDDim){
 			int qmn = DMRGCat::getAddID(xm.first, xn.first);
 			std::vector<std::pair<int, int>> lrdims;
 			std::vector<std::pair<int, int>> lrqids;
 
-			for (const auto& xs : sys.QSpace.SubQIDDim){
-				for (const auto& xe : env.QSpace.SubQIDDim){
+			for (const auto& xs : sys.SubQIDDim){
+				for (const auto& xe : env.SubQIDDim){
 					int qse = DMRGCat::getAddID(xs.first, xe.first);
 					int idsum = DMRGCat::getAddID(qmn, qse);
 					if (idsum == TotQID){
@@ -41,10 +41,10 @@ int DMRGCat::QWave::setWave(int totqID, Block& sys, Block& m, Block& n, Block& e
 			}
 
 			if (lrdims.size() > 0){
-				MNQID2SysEnvNo[{xm.first, xn.first }] = sysEnvNo;				
-				DMRGCat::QMat qmat; 
+				MNQID2SysEnvNo[{xm.first, xn.first }] = sysEnvNo;
+				DMRGCat::QMat qmat;
 				SysEnvQMat.push_back(qmat);
-				SysEnvQMat.at(sysEnvNo).zero(lrqids,lrdims);
+				SysEnvQMat.at(sysEnvNo).zero(lrqids, lrdims);
 				sysEnvNo++;
 			}
 		}

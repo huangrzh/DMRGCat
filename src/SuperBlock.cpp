@@ -10,8 +10,8 @@ DMRGCat::SuperBlock::SuperBlock(Parameter& para, Block& sys, Block& m, Block& n,
 	PToE = &env;
 	Para = &para;
 
-	Dim = GsWave.setWave(TotQNoID,sys,m,n,env);	
-	GsWave0.setWave(TotQNoID, sys, m, n, env);
+	Dim = GsWave.setWave(TotQNoID,sys.QSpace,m.QSpace,n.QSpace,env.QSpace);	
+	GsWave0.setWave(TotQNoID, sys.QSpace, m.QSpace, n.QSpace, env.QSpace);
 	calGroundState();
 }
 

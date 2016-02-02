@@ -4,7 +4,7 @@
 #include <vector>
 #include "datatype.h"
 #include "QMat.h"
-#include "Block.h"
+#include "BlockQBase.h"
 #include <unordered_map>
 
 namespace DMRGCat{
@@ -17,8 +17,8 @@ class QWave{
 	public:	
 		QWave();
 		~QWave();
-		QWave(int totqID, Block& sys, Block& m, Block& n, Block& env);
-		int setWave(int totqID, Block& sys, Block& m, Block& n, Block& env);
+		QWave(int totqID, BlockQBase& sys, BlockQBase& m, BlockQBase& n, BlockQBase& env);
+		int setWave(int totqID, BlockQBase& sys, BlockQBase& m, BlockQBase& n, BlockQBase& env);
 
 		void zeros();
 		void v2QWave(const double* f);
@@ -29,6 +29,7 @@ class QWave{
 
 		void wave2QMat(const BlockQBase& s, const BlockQBase& m, const BlockQBase& n, const BlockQBase& e, QMat& var)const;
 		friend class SuperBlock;
+		friend class SuperBlock2D;
 	private:
 		int Dim;
 		int TotQID;

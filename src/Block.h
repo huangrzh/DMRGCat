@@ -24,8 +24,6 @@ public:
 	void initial(const Parameter& para);
 	void operator=(const Block& var);
 	void reNorm(const BlockQBase& UBase, const QMat& reNormU);
-	void clear();
-
 
 	void save(std::ofstream& savefile)const;
 	void save(int s)const;
@@ -34,14 +32,14 @@ public:
 	void print()const;
 	void print(std::string)const;
 
-
-	friend std::ostream& operator<<(std::ostream&, const Block&);
 	friend class QWave;
 	friend class SuperBlock;
-private:
+protected:
 	BlockQBase QSpace;
-    std::vector<QMat> QOperator;
-    
+	std::vector<QMat> QOperator;
+
+	void clear();
+private:    
 };
 
 

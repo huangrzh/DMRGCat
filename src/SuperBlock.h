@@ -5,6 +5,7 @@
 #include "Parameter.h"
 #include "QMat.h"
 #include "Block.h"
+#include "Block2D.h"
 #include "QWave.h"
 
 

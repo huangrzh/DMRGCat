@@ -62,16 +62,16 @@ void DMRGCat::MulChain::constructChain(){
 }
 
 
-int DMRGCat::MulChain::no2X(int no){
+int DMRGCat::MulChain::no2X(int no)const{
 	return No2X(no-1);
 }
 
-int DMRGCat::MulChain::no2Y(int no){
+int DMRGCat::MulChain::no2Y(int no)const{
 	return No2Y(no-1);
 }
 
 
-int DMRGCat::MulChain::xy2No(int x, int y){
+int DMRGCat::MulChain::xy2No(int x, int y)const{
 	return XY2No(x,y);
 }
 
@@ -105,7 +105,7 @@ bool DMRGCat::MulChain::IsNeighbor(int no1, int no2){
 }
 
 
-void DMRGCat::MulChain::getNeightbor(int no,std::vector<int>& neighbor){
+void DMRGCat::MulChain::getNeightbor(int no,std::vector<int>& neighbor)const{
 	neighbor.clear();
 
 	if(no<1 || no>Lx*Ly){
@@ -161,4 +161,15 @@ void DMRGCat::MulChain::print(std::string s){
 	std::cout << __FUNCTION__ << "\n";
 	std::cout << s << "\n";
 	print();
+}
+
+
+
+int DMRGCat::MulChain::getLx()const{
+	return Lx;
+}
+
+
+int DMRGCat::MulChain::getLy()const{
+	return Ly;
 }
