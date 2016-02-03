@@ -9,10 +9,11 @@
 namespace DMRGCat{
 	class Block2D : protected Block{
 	public:
-		Block2D();
+		Block2D(){}
+		~Block2D(){}
 		Block2D(const Block2D& var);
 		Block2D(const Parameter& para, int site);		
-		~Block2D();
+		
 
 		void initial2D(const Parameter& para, int site);
 		void update2D(const Parameter& para, const MulChain& chain, const Block2D& added, const Block2D& old);

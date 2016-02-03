@@ -1,4 +1,3 @@
-	
 #ifndef DMRGCATDATATYPE
 #define DMRGCATDATATYPE
 
@@ -52,6 +51,13 @@ namespace DMRGCat{
 		BlockE,
 	};
 
+
+	enum No_{
+		Zero = 0,
+		One = 1,
+		Two = 2,
+		Three = 3,
+	};
 
 	//get reNorm U matrix;
 	struct EigStruc{

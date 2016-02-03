@@ -54,8 +54,21 @@ void DMRGCat::Block2D::update2D(const Parameter& para, const MulChain& chain, co
 	SiteNo = added.SiteNo;
 	NoOfSites = old.NoOfSites + 1;
 	update(para, old);
-	???
-	update Hamiltonian
+	if (old.OutSite2OperatorNo.size() == chain.getLy()){
+		int sweep_dir = added.SiteNo > old.SiteNo ? 1 : -1;
+		int sitex_ = chain.no2X(added.SiteNo);
+		int sitex = sitex_ - sweep_dir;
+		int sitey = chain.no2Y(added.SiteNo);
+		int leftSiteNo = chain.xy2No(sitex, sitey);
+		int left_OP_no = old.OutSite2OperatorNo.at(leftSiteNo);
+		QMat tempO;
+		tempO.kron(added.QOperator.at(CupDag), old.QOperator.at(Cup), QSpace);
+		tempO.time(para.getT());
+		QOperator.at(SiteH).add(tempO, QSpace);
+		tempO.trans();
+		QOperator.at(SiteH).add(tempO, QSpace);
+	}
+
 		
 	OutSite2OperatorNo = old.OutSite2OperatorNo;
 	OutQOCd = old.OutQOCd;
@@ -101,8 +114,7 @@ void DMRGCat::Block2D::update2D(const Parameter& para, const MulChain& chain, co
 	}
 
 	//Out size == Ly
-	else{
-		
+	else{		
 		int old_in_size = old.InSite2OperatorNo.size();
 		QMat tempO1;
 		for (int i = 0; i < old_in_size; i++){

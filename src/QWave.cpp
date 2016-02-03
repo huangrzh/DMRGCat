@@ -1,4 +1,5 @@
 #include "setting.h"
+#include "U1Q.h"
 #include "QWave.h"
 
 
@@ -6,7 +7,7 @@
 DMRGCat::QWave::QWave(){};
 DMRGCat::QWave::~QWave(){};
 
-DMRGCat::QWave::QWave(int totqID, Block& sys, Block& m, Block& n, Block& env){
+DMRGCat::QWave::QWave(int totqID, BlockQBase& sys, BlockQBase& m, BlockQBase& n, BlockQBase& env){
 	setWave(totqID,sys,m,n,env);
 }
 

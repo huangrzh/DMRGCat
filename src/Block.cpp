@@ -3,10 +3,6 @@
 #include "setting.h"
 
 
-DMRGCat::Block::Block(){}
-DMRGCat::Block::~Block(){}
-
-
 //Single site block;
 DMRGCat::Block::Block(const Parameter& para){
 	initial(para);
@@ -131,7 +127,6 @@ void DMRGCat::Block::update(const Parameter& para, const Block& old){
 
 	//Hamiltonian;
 	QOperator.at(SiteH).kron(added.QOperator.at(Eye), old.QOperator.at(SiteH), QSpace);
-
 
 	DMRGCat::QMat tempO;
 	tempO.kron(added.QOperator.at(SiteH), old.QOperator.at(Eye), QSpace);

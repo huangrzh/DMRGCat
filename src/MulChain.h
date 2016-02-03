@@ -15,6 +15,13 @@ namespace DMRGCat{
 
 		bool IsNeighbor(int, int);
 
+		std::string xEdge()const{
+			return XEdge;
+		}
+
+		std::string yEdge()const{
+			return YEdge;
+		}
 
 		
 		int getLx()const;

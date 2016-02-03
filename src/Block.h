@@ -1,7 +1,6 @@
 #ifndef BLOCK_H
 #define BLOCK_H
 
-
 #include <vector>
 #include "Parameter.h"
 #include "U1Q.h"
@@ -14,10 +13,11 @@ namespace DMRGCat{
 class Block{
 	
 public:
-	Block();
+	Block(){}
+	virtual ~Block(){}
+
 	Block(const Parameter& para);
-	Block(const Block& var);
-	~Block();
+	Block(const Block& var);	
 	Block(const Parameter& para, const Block& old);
 	
 	void update(const Parameter& para, const Block& old);
