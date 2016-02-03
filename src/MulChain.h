@@ -10,8 +10,9 @@ namespace DMRGCat{
 	class MulChain{
 
 	public:
+		MulChain(){}
 		MulChain(std::ifstream& infile);
-		void constructChain();
+		void constructChain(std::ifstream& infile);
 
 		bool IsNeighbor(int, int);
 

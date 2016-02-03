@@ -8,6 +8,11 @@
 //*  |  |  |
 //*     >--|
 DMRGCat::MulChain::MulChain(std::ifstream& s){
+	constructChain(s);
+}
+
+
+void DMRGCat::MulChain::constructChain(std::ifstream& s){
 	char x = 'q';
 	while (x != '=') s >> x;
 	s >> XEdge;
@@ -29,11 +34,6 @@ DMRGCat::MulChain::MulChain(std::ifstream& s){
 	while (x != '=') s >> x;
 	s >> PathMethod;
 
-	constructChain();
-}
-
-
-void DMRGCat::MulChain::constructChain(){	
 	XY2No.zeros(Lx+2,Ly+2);
 	No2X.zeros(Lx*Ly);
 	No2Y.zeros(Lx*Ly);

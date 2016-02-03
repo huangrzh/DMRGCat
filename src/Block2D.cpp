@@ -216,9 +216,9 @@ void DMRGCat::Block2D::save2D(std::ofstream& savefile)const{
 	}
 }
 
-void DMRGCat::Block2D::save2D(int s)const{
+void DMRGCat::Block2D::save2D()const{
 	std::string outs = "Data/";
-	outs += std::to_string(s);
+	outs += std::to_string(SiteNo);
 	std::ofstream sfout(outs, std::ios::binary | std::ios::out);
 	save2D(sfout);
 	sfout.close();

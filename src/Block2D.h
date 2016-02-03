@@ -19,10 +19,12 @@ namespace DMRGCat{
 		void update2D(const Parameter& para, const MulChain& chain, const Block2D& added, const Block2D& old);
 		void operator=(const Block2D& var);
 		void reNorm2D(const BlockQBase& UBase, const QMat& reNormU);
-
+		void setSiteNo(int no_){
+			SiteNo = no_;
+		}
 
 		void save2D(std::ofstream& savefile)const;
-		void save2D(int s)const;
+		void save2D()const;
 		void load2D(std::ifstream& loadfile);
 		void load2D(int s);
 		void print2D()const;
